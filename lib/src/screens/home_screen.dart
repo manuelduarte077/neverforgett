@@ -15,11 +15,10 @@ class HomeScreen extends StatelessWidget {
           children: <Widget>[
             const ListTile(
               leading: Icon(Icons.album),
-              title: Text('Example 1',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  )),
+              title: Text(
+                'Example 1',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              ),
             ),
             ButtonBar(
               children: <Widget>[

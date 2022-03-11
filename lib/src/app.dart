@@ -8,15 +8,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
       home: const HomeScreen(),
       initialRoute: 'home',
       routes: {
-        'home': (context) => HomeScreen(),
-        'example1': (context) => ExampleOneScreen(),
+        'home': (context) => const HomeScreen(),
+        'example1': (context) => const ExampleOneScreen(),
       },
     );
   }
