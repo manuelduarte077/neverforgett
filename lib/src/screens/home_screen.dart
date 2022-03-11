@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           CardExample(
-            title: 'Example 2',
+            title: 'Markdown Editor',
             textButton: TextButton(
               child: const Text('Show More', style: TextStyle(fontSize: 20)),
               onPressed: () {
