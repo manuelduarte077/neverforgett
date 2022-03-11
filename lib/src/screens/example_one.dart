@@ -14,7 +14,7 @@ class ExampleOneScreen extends StatelessWidget {
       body: FutureBuilder(
         future: Future.delayed(
           const Duration(seconds: 1),
-          () => rootBundle.loadString('assets/hello.md'),
+          () => rootBundle.loadString('assets/example.md'),
         ),
         builder: (context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
