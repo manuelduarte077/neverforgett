@@ -61,9 +61,11 @@ class _ExampleTwoScreenState extends State<ExampleTwoScreen>
           ),
           Container(
             margin: const EdgeInsets.all(20),
-            child: MarkdownBody(
-              data: text,
-              styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+            child: SingleChildScrollView(
+              child: MarkdownBody(
+                data: text,
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
+              ),
             ),
           ),
         ],
