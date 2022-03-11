@@ -1,4 +1,5 @@
 import 'package:flmarkdown/src/screens/example_one.dart';
+import 'package:flmarkdown/src/screens/example_two.dart';
 import 'package:flmarkdown/src/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'home': (context) => const HomeScreen(),
         'example1': (context) => const ExampleOneScreen(),
+        'example2': (context) => const ExampleTwoScreen(),
       },
     );
   }

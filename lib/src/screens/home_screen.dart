@@ -1,3 +1,4 @@
+import 'package:flmarkdown/src/widgets/examples.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,30 +10,27 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const ListTile(
-              leading: Icon(Icons.album),
-              title: Text(
-                'Example 1',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
+      body: ListView(
+        children: <Widget>[
+          CardExample(
+            title: 'Example 1',
+            textButton: TextButton(
+              child: const Text('Show More', style: TextStyle(fontSize: 20)),
+              onPressed: () {
+                Navigator.pushNamed(context, 'example1');
+              },
             ),
-            ButtonBar(
-              children: <Widget>[
-                TextButton(
-                  child:
-                      const Text('Show More', style: TextStyle(fontSize: 20)),
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'example1');
-                  },
-                ),
-              ],
+          ),
+          CardExample(
+            title: 'Example 2',
+            textButton: TextButton(
+              child: const Text('Show More', style: TextStyle(fontSize: 20)),
+              onPressed: () {
+                Navigator.pushNamed(context, 'example2');
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
