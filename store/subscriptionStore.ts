@@ -6,7 +6,7 @@ interface SubscriptionStore {
   subscriptions: Subscription[];
   loading: boolean;
   error: string | null;
-  
+
   // Actions
   loadSubscriptions: () => Promise<void>;
   addSubscription: (subscription: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
@@ -49,7 +49,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
 
       const { subscriptions } = get();
       const updatedSubscriptions = [...subscriptions, newSubscription];
-      
+
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
@@ -79,7 +79,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
     try {
       const { subscriptions } = get();
       const updatedSubscriptions = subscriptions.filter(sub => sub.id !== id);
-      
+
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
@@ -89,7 +89,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
 
   getStats: () => {
     const { subscriptions } = get();
-    
+
     const totalMonthly = subscriptions.reduce((sum, sub) => {
       return sum + (sub.frequency === 'monthly' ? sub.cost : sub.cost / 12);
     }, 0);
@@ -129,7 +129,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
   searchSubscriptions: (query) => {
     const { subscriptions } = get();
     const lowercaseQuery = query.toLowerCase();
-    
+
     return subscriptions.filter(sub =>
       sub.name.toLowerCase().includes(lowercaseQuery) ||
       sub.category.toLowerCase().includes(lowercaseQuery) ||

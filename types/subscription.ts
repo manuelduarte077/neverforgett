@@ -31,7 +31,7 @@ export const SUBSCRIPTION_CATEGORIES = [
   'Otros'
 ];
 
-export const CATEGORY_COLORS = {
+export const CATEGORY_COLORS: { [key: string]: string } = {
   'Entretenimiento': '#FF6B6B',
   'Productividad': '#4ECDC4',
   'Música': '#45B7D1',

@@ -16,9 +16,9 @@ export function StatsCard({ title, value, subtitle, color = '#007AFF', icon }: S
         <Text style={styles.title}>{title}</Text>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
       </View>
-      
+
       <Text style={[styles.value, { color }]}>{value}</Text>
-      
+
       {subtitle && (
         <Text style={styles.subtitle}>{subtitle}</Text>
       )}

@@ -7,12 +7,12 @@ import { StatsCard } from '@/components/StatsCard';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 
 export default function DashboardScreen() {
-  const { 
-    subscriptions, 
-    loading, 
-    loadSubscriptions, 
-    getStats, 
-    getUpcomingRenewals 
+  const {
+    subscriptions,
+    loading,
+    loadSubscriptions,
+    getStats,
+    getUpcomingRenewals
   } = useSubscriptionStore();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
@@ -93,7 +93,7 @@ export default function DashboardScreen() {
             <Text style={styles.sectionSubtitle}>
               Renovaciones en los próximos 7 días
             </Text>
-            
+
             <View style={styles.subscriptionsList}>
               {upcomingRenewals.map((subscription) => (
                 <SubscriptionCard
@@ -111,7 +111,7 @@ export default function DashboardScreen() {
             <Text style={styles.sectionSubtitle}>
               Últimas suscripciones agregadas
             </Text>
-            
+
             <View style={styles.subscriptionsList}>
               {subscriptions
                 .slice(-3)

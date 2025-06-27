@@ -4,7 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronDown, Calendar, DollarSign, Tag, FileText } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
-import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
+import { CATEGORY_COLORS, SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
+
 
 export default function AddSubscriptionScreen() {
   const { addSubscription, loading } = useSubscriptionStore();
@@ -57,6 +58,7 @@ export default function AddSubscriptionScreen() {
         renewalDate: formData.renewalDate.toISOString(),
         category: formData.category,
         notes: formData.notes.trim(),
+        color: CATEGORY_COLORS[formData.category] || CATEGORY_COLORS.Otros,
       });
 
       // Reset form
@@ -90,7 +92,7 @@ export default function AddSubscriptionScreen() {
   const handleDateChange = (event: any, selectedDate?: Date) => {
     // Always close the picker first
     setShowDatePicker(false);
-    
+
     // Update the date if one was selected
     if (selectedDate) {
       setFormData({ ...formData, renewalDate: selectedDate });
@@ -152,7 +154,7 @@ export default function AddSubscriptionScreen() {
               </Text>
               <ChevronDown size={20} color="#8E8E93" />
             </TouchableOpacity>
-            
+
             {showFrequencyPicker && (
               <View style={styles.optionsContainer}>
                 <TouchableOpacity
@@ -189,7 +191,7 @@ export default function AddSubscriptionScreen() {
                 {formatDate(formData.renewalDate)}
               </Text>
             </TouchableOpacity>
-            
+
             {showDatePicker && (
               <DateTimePicker
                 value={formData.renewalDate}
@@ -214,7 +216,7 @@ export default function AddSubscriptionScreen() {
               <ChevronDown size={20} color="#8E8E93" />
             </TouchableOpacity>
             {errors.category && <Text style={styles.errorText}>{errors.category}</Text>}
-            
+
             {showCategoryPicker && (
               <View style={styles.optionsContainer}>
                 {SUBSCRIPTION_CATEGORIES.map((category) => (

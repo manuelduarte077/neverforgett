@@ -39,14 +39,14 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={[styles.colorBar, { backgroundColor: subscription.color }]} />
-      
+
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.titleSection}>
             <Text style={styles.name}>{subscription.name}</Text>
             <Text style={styles.category}>{subscription.category}</Text>
           </View>
-          
+
           <TouchableOpacity onPress={onMorePress} style={styles.moreButton}>
             <MoreVertical size={20} color="#8E8E93" />
           </TouchableOpacity>

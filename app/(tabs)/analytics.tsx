@@ -37,13 +37,13 @@ export default function AnalyticsScreen() {
 
   // Prepare data for bar chart - Monthly costs by category
   const barChartData = {
-    labels: Object.keys(stats.categoryBreakdown).map(cat => 
+    labels: Object.keys(stats.categoryBreakdown).map(cat =>
       cat.length > 8 ? cat.substring(0, 8) + '...' : cat
     ),
     datasets: [
       {
         data: Object.values(stats.categoryBreakdown),
-        colors: Object.keys(stats.categoryBreakdown).map(cat => 
+        colors: Object.keys(stats.categoryBreakdown).map(cat =>
           () => CATEGORY_COLORS[cat] || CATEGORY_COLORS.Otros
         ),
       },
@@ -51,13 +51,13 @@ export default function AnalyticsScreen() {
   };
 
   // Calculate average subscription cost
-  const averageCost = subscriptions.length > 0 
-    ? stats.totalMonthly / subscriptions.length 
+  const averageCost = subscriptions.length > 0
+    ? stats.totalMonthly / subscriptions.length
     : 0;
 
   // Find most expensive category
   const mostExpensiveCategory = Object.entries(stats.categoryBreakdown)
-    .sort(([,a], [,b]) => b - a)[0];
+    .sort(([, a], [, b]) => b - a)[0];
 
   const chartConfig = {
     backgroundColor: '#FFFFFF',
@@ -83,7 +83,7 @@ export default function AnalyticsScreen() {
             Análisis de tus gastos en suscripciones
           </Text>
         </View>
-        
+
         <View style={styles.emptyState}>
           <View style={styles.emptyIconContainer}>
             <BarChart3 size={64} color="#007AFF" />
@@ -126,7 +126,7 @@ export default function AnalyticsScreen() {
               icon={<PieChartIcon size={20} color="#FF9500" />}
             />
           </View>
-          
+
           <View style={styles.statsRow}>
             <StatsCard
               title="Gasto Anual"
@@ -160,7 +160,7 @@ export default function AnalyticsScreen() {
                 <PieChartIcon size={24} color="#007AFF" />
               </View>
             </View>
-            
+
             <View style={styles.chartContainer}>
               <PieChart
                 data={pieChartData}
@@ -173,7 +173,7 @@ export default function AnalyticsScreen() {
                 center={[10, 0]}
                 absolute
               />
-              
+
               {/* Enhanced Legend */}
               <View style={styles.legendContainer}>
                 {pieChartData.map((item, index) => (
@@ -202,7 +202,7 @@ export default function AnalyticsScreen() {
                 <BarChart3 size={24} color="#34C759" />
               </View>
             </View>
-            
+
             <View style={styles.chartContainer}>
               <BarChart
                 data={barChartData}
@@ -216,8 +216,7 @@ export default function AnalyticsScreen() {
                 showValuesOnTopOfBars
                 withCustomBarColorFromData
                 flatColor
-                fromZero
-              />
+                fromZero yAxisLabel={''} yAxisSuffix={''} />
             </View>
           </View>
         )}
@@ -235,7 +234,7 @@ export default function AnalyticsScreen() {
               <TrendingUp size={24} color="#FF3B30" />
             </View>
           </View>
-          
+
           <View style={styles.insightsList}>
             <View style={styles.insightItem}>
               <View style={[styles.insightIcon, { backgroundColor: '#E8F5E8' }]}>
