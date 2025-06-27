@@ -9,7 +9,14 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.manuelduarte077.subscription.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "dev.manuelduarte077.subscription.app"
     },
     "web": {
       "bundler": "metro",
@@ -23,6 +30,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a26759de-9ca0-4f11-899b-e189aebe019a"
+      }
+    },
+    "owner": "manuelduarte077"
   }
 }
