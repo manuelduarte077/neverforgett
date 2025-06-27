@@ -5,6 +5,7 @@ import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SymbolView } from 'expo-symbols';
+import { router } from 'expo-router';
 
 export default function DashboardScreen() {
   const {
@@ -25,7 +26,7 @@ export default function DashboardScreen() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: 2,
     }).format(amount);
   };
@@ -132,7 +133,8 @@ export default function DashboardScreen() {
           </View>
         )}
       </ScrollView>
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity style={styles.floatingButton}
+        onPress={() => router.push('/add')}>
         <SymbolView name="plus"
           tintColor="#FFFFFF"
           type="hierarchical" />

@@ -32,6 +32,11 @@ export default function RootLayout() {
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="add"
+          options={{
+            presentation: 'modal',
+            headerShown: true, title: 'Agregar Suscripción',
+          }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

@@ -45,7 +45,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="add"
         options={{
           title: 'Agregar',
@@ -57,7 +57,7 @@ export default function TabLayout() {
             }} type="hierarchical" />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="analytics"
         options={{
