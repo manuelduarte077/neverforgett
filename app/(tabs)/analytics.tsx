@@ -115,7 +115,6 @@ export default function AnalyticsScreen() {
               value={formatCurrency(averageCost)}
               subtitle="Por suscripción"
               color="#34C759"
-              icon={<SymbolView name="target" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -123,7 +122,6 @@ export default function AnalyticsScreen() {
               value={mostExpensiveCategory ? mostExpensiveCategory[0] : 'N/A'}
               subtitle={mostExpensiveCategory ? formatCurrency(mostExpensiveCategory[1]) : ''}
               color="#FF9500"
-              icon={<SymbolView name="chart.pie" type="hierarchical" />}
             />
           </View>
 
@@ -133,7 +131,6 @@ export default function AnalyticsScreen() {
               value={formatCurrency(stats.totalAnnual)}
               subtitle="Proyección total"
               color="#007AFF"
-              icon={<SymbolView name="calendar" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -141,7 +138,6 @@ export default function AnalyticsScreen() {
               value={formatCurrency(stats.totalMonthly * 0.15)}
               subtitle="15% optimización"
               color="#5856D6"
-              icon={<SymbolView name="dollarsign" type="hierarchical" />}
             />
           </View>
         </View>

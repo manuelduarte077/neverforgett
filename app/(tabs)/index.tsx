@@ -56,7 +56,6 @@ export default function DashboardScreen() {
               value={formatCurrency(stats.totalMonthly)}
               subtitle="Total por mes"
               color="#34C759"
-              icon={<SymbolView name="dollarsign" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -64,7 +63,6 @@ export default function DashboardScreen() {
               value={formatCurrency(stats.totalAnnual)}
               subtitle="Total por año"
               color="#007AFF"
-              icon={<SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />}
             />
           </View>
 
@@ -74,7 +72,6 @@ export default function DashboardScreen() {
               value={stats.activeSubscriptions.toString()}
               subtitle="Activas"
               color="#FF9500"
-              icon={<SymbolView name="creditcard" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -82,7 +79,6 @@ export default function DashboardScreen() {
               value={upcomingRenewals.length.toString()}
               subtitle="En 7 días"
               color="#FF3B30"
-              icon={<SymbolView name="bell" type="hierarchical" />}
             />
           </View>
         </View>

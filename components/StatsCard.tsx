@@ -6,15 +6,13 @@ interface StatsCardProps {
   value: string;
   subtitle?: string;
   color?: string;
-  icon?: React.ReactNode;
 }
 
-export function StatsCard({ title, value, subtitle, color = '#007AFF', icon }: StatsCardProps) {
+export function StatsCard({ title, value, subtitle, color = '#007AFF' }: StatsCardProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        {icon && <View style={styles.iconContainer}>{icon}</View>}
       </View>
 
       <Text style={[styles.value, { color }]}>{value}</Text>
@@ -53,9 +51,6 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-  },
-  iconContainer: {
-    opacity: 0.7,
   },
   value: {
     fontFamily: 'Inter-Bold',
