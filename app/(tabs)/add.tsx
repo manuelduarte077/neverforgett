@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronDown, Calendar, DollarSign, Tag, FileText } from 'lucide-react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { CATEGORY_COLORS, SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
+import { SymbolView } from 'expo-symbols';
 
 
 export default function AddSubscriptionScreen() {
@@ -129,7 +129,11 @@ export default function AddSubscriptionScreen() {
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>Costo</Text>
             <View style={[styles.inputContainer, errors.cost && styles.inputError]}>
-              <DollarSign size={20} color="#8E8E93" />
+              <SymbolView name="dollarsign" style={{
+                width: 20,
+                height: 20,
+                margin: 5,
+              }} type="hierarchical" />
               <TextInput
                 style={[styles.input, styles.inputWithIcon]}
                 value={formData.cost}
@@ -152,7 +156,11 @@ export default function AddSubscriptionScreen() {
               <Text style={styles.pickerText}>
                 {formData.frequency === 'monthly' ? 'Mensual' : 'Anual'}
               </Text>
-              <ChevronDown size={20} color="#8E8E93" />
+              <SymbolView name="chevron.down" style={{
+                width: 20,
+                height: 20,
+                margin: 5,
+              }} type="hierarchical" />
             </TouchableOpacity>
 
             {showFrequencyPicker && (
@@ -186,7 +194,11 @@ export default function AddSubscriptionScreen() {
               style={styles.pickerContainer}
               onPress={() => setShowDatePicker(true)}
             >
-              <Calendar size={20} color="#8E8E93" />
+              <SymbolView name="calendar" style={{
+                width: 20,
+                height: 20,
+                margin: 5,
+              }} type="hierarchical" />
               <Text style={[styles.pickerText, styles.pickerTextWithIcon]}>
                 {formatDate(formData.renewalDate)}
               </Text>
@@ -209,11 +221,19 @@ export default function AddSubscriptionScreen() {
               style={[styles.pickerContainer, errors.category && styles.inputError]}
               onPress={() => setShowCategoryPicker(!showCategoryPicker)}
             >
-              <Tag size={20} color="#8E8E93" />
+              <SymbolView name="tag" style={{
+                width: 20,
+                height: 20,
+                margin: 5,
+              }} type="hierarchical" />
               <Text style={[styles.pickerText, styles.pickerTextWithIcon, !formData.category && styles.placeholderText]}>
                 {formData.category || 'Seleccionar categoría'}
               </Text>
-              <ChevronDown size={20} color="#8E8E93" />
+              <SymbolView name="chevron.down" style={{
+                width: 20,
+                height: 20,
+                margin: 5,
+              }} type="hierarchical" />
             </TouchableOpacity>
             {errors.category && <Text style={styles.errorText}>{errors.category}</Text>}
 
@@ -239,7 +259,11 @@ export default function AddSubscriptionScreen() {
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>Notas (Opcional)</Text>
             <View style={styles.inputContainer}>
-              <FileText size={20} color="#8E8E93" />
+              <SymbolView name="text.document" style={{
+                width: 35,
+                height: 35,
+                margin: 5,
+              }} type="hierarchical" />
               <TextInput
                 style={[styles.input, styles.inputWithIcon, styles.textArea]}
                 value={formData.notes}

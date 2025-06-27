@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Calendar, DollarSign, MoreVertical } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
 import { Subscription } from '@/types/subscription';
 
 interface SubscriptionCardProps {
@@ -13,7 +13,7 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: 2,
     }).format(amount);
   };
@@ -48,13 +48,14 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
           </View>
 
           <TouchableOpacity onPress={onMorePress} style={styles.moreButton}>
-            <MoreVertical size={20} color="#8E8E93" />
+            <SymbolView name="ellipsis" type="hierarchical" />
+
           </TouchableOpacity>
         </View>
 
         <View style={styles.details}>
           <View style={styles.costSection}>
-            <DollarSign size={16} color="#34C759" />
+            <SymbolView name="dollarsign" type="hierarchical" />
             <Text style={styles.cost}>
               {formatCurrency(subscription.cost)}
             </Text>
@@ -64,7 +65,9 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
           </View>
 
           <View style={styles.renewalSection}>
-            <Calendar size={16} color={isUpcoming ? '#FF9500' : '#8E8E93'} />
+            <SymbolView name="calendar"
+              colors={isUpcoming ? '#FF9500' : '#8E8E93'}
+              type="hierarchical" />
             <Text style={[styles.renewalDate, isUpcoming && styles.upcomingRenewal]}>
               {formatDate(subscription.renewalDate)}
             </Text>

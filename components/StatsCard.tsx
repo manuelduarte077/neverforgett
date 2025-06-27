@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Inter-Medium',
-    fontSize: 12,
+    fontSize: 14,
     color: '#8E8E93',
     textTransform: 'uppercase',
     letterSpacing: 0.5,

@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, CreditCard, Plus, BarChart3, Settings } from 'lucide-react-native';
+import { SymbolView } from 'expo-symbols';
 
 export default function TabLayout() {
   return (
@@ -24,7 +24,11 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ size, color }) => (
-            <Home size={size} color={color} />
+            <SymbolView name="house" style={{
+              width: size,
+              height: size,
+              margin: 5,
+            }} type="hierarchical" />
           ),
         }}
       />
@@ -33,7 +37,11 @@ export default function TabLayout() {
         options={{
           title: 'Suscripciones',
           tabBarIcon: ({ size, color }) => (
-            <CreditCard size={size} color={color} />
+            <SymbolView name="creditcard" style={{
+              width: size,
+              height: size,
+              margin: 5,
+            }} type="hierarchical" />
           ),
         }}
       />
@@ -42,7 +50,11 @@ export default function TabLayout() {
         options={{
           title: 'Agregar',
           tabBarIcon: ({ size, color }) => (
-            <Plus size={size} color={color} />
+            <SymbolView name="plus" style={{
+              width: size,
+              height: size,
+              margin: 5,
+            }} type="hierarchical" />
           ),
         }}
       />
@@ -51,7 +63,11 @@ export default function TabLayout() {
         options={{
           title: 'Estadísticas',
           tabBarIcon: ({ size, color }) => (
-            <BarChart3 size={size} color={color} />
+            <SymbolView name="chart.bar" style={{
+              width: size,
+              height: size,
+              margin: 5,
+            }} type="hierarchical" />
           ),
         }}
       />
@@ -60,7 +76,11 @@ export default function TabLayout() {
         options={{
           title: 'Ajustes',
           tabBarIcon: ({ size, color }) => (
-            <Settings size={size} color={color} />
+            <SymbolView name="gear" style={{
+              width: size,
+              height: size,
+              margin: 5,
+            }} type="hierarchical" />
           ),
         }}
       />

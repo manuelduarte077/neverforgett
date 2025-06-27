@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, Filter, CreditCard } from 'lucide-react-native';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
+import { SymbolView } from 'expo-symbols';
 
 export default function SubscriptionsScreen() {
   const {
@@ -71,7 +71,7 @@ export default function SubscriptionsScreen() {
 
       <View style={styles.searchSection}>
         <View style={styles.searchContainer}>
-          <Search size={20} color="#8E8E93" />
+          <SymbolView name="magnifyingglass" type="hierarchical" />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar suscripciones..."
@@ -85,7 +85,7 @@ export default function SubscriptionsScreen() {
           style={[styles.filterButton, showFilters && styles.filterButtonActive]}
           onPress={() => setShowFilters(!showFilters)}
         >
-          <Filter size={20} color={showFilters ? '#007AFF' : '#8E8E93'} />
+          <SymbolView name="line.3.horizontal.decrease" type="hierarchical" />
         </TouchableOpacity>
       </View>
 
@@ -135,7 +135,7 @@ export default function SubscriptionsScreen() {
           <View style={styles.emptyState}>
             {searchQuery || selectedCategory ? (
               <>
-                <Search size={64} color="#C7C7CC" />
+                <SymbolView name="magnifyingglass" type="hierarchical" />
                 <Text style={styles.emptyTitle}>No se encontraron resultados</Text>
                 <Text style={styles.emptySubtitle}>
                   Intenta ajustar tus filtros de búsqueda
@@ -143,7 +143,7 @@ export default function SubscriptionsScreen() {
               </>
             ) : (
               <>
-                <CreditCard size={64} color="#C7C7CC" />
+                <SymbolView name="creditcard" type="hierarchical" />
                 <Text style={styles.emptyTitle}>No hay suscripciones</Text>
                 <Text style={styles.emptySubtitle}>
                   Agrega tu primera suscripción desde la pestaña "Agregar"

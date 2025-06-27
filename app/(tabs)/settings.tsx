@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bell, Trash2, Download, Upload, Info, ChevronRight } from 'lucide-react-native';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
+import { SymbolView } from 'expo-symbols';
 
 export default function SettingsScreen() {
   const { subscriptions, loadSubscriptions } = useSubscriptionStore();
@@ -33,7 +33,6 @@ export default function SettingsScreen() {
           text: 'Borrar Todo',
           style: 'destructive',
           onPress: () => {
-            // This would need to be implemented in the store
             Alert.alert('Función no implementada', 'Esta funcionalidad se implementaría en una versión completa.');
           }
         },
@@ -83,7 +82,7 @@ export default function SettingsScreen() {
         )}
       </View>
       {showChevron && (
-        <ChevronRight size={20} color="#C7C7CC" />
+        <SymbolView name="chevron.right" type="hierarchical" />
       )}
     </TouchableOpacity>
   );
@@ -112,7 +111,7 @@ export default function SettingsScreen() {
                 {subscriptions.reduce((total, sub) => {
                   const monthlyCost = sub.frequency === 'monthly' ? sub.cost : sub.cost / 12;
                   return total + monthlyCost;
-                }, 0).toFixed(0)}€
+                }, 0).toFixed(0)}$
               </Text>
               <Text style={styles.statLabel}>Gasto Mensual</Text>
             </View>
@@ -124,7 +123,7 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Notificaciones</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<Bell size={20} color="#007AFF" />}
+              icon={<SymbolView name="bell" type="hierarchical" />}
               title="Recordatorios"
               subtitle="Configurar notificaciones de renovación"
               onPress={handleNotificationSettings}
@@ -137,13 +136,13 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Gestión de Datos</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<Download size={20} color="#34C759" />}
+              icon={<SymbolView name="arrow.down.circle" type="hierarchical" />}
               title="Exportar Datos"
               subtitle="Guardar tus suscripciones en un archivo"
               onPress={handleExportData}
             />
             <SettingItem
-              icon={<Upload size={20} color="#007AFF" />}
+              icon={<SymbolView name="arrow.up.circle" type="hierarchical" />}
               title="Importar Datos"
               subtitle="Cargar suscripciones desde un archivo"
               onPress={handleImportData}
@@ -156,7 +155,7 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Zona de Peligro</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<Trash2 size={20} color="#FF3B30" />}
+              icon={<SymbolView name="trash" type="hierarchical" />}
               title="Borrar Todos los Datos"
               subtitle="Eliminar todas las suscripciones permanentemente"
               onPress={handleClearAllData}
@@ -170,7 +169,7 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Información</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<Info size={20} color="#8E8E93" />}
+              icon={<SymbolView name="info" type="hierarchical" />}
               title="Acerca de la App"
               subtitle="Versión e información del desarrollador"
               onPress={handleAbout}

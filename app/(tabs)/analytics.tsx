@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PieChart, BarChart } from 'react-native-chart-kit';
-import { TrendingUp, ChartPie as PieChartIcon, ChartBar as BarChart3, Target, Calendar, DollarSign } from 'lucide-react-native';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
 import { CATEGORY_COLORS } from '@/types/subscription';
+import { SymbolView } from 'expo-symbols';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -21,7 +21,7 @@ export default function AnalyticsScreen() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'USD',
       minimumFractionDigits: 0,
     }).format(amount);
   };
@@ -86,7 +86,7 @@ export default function AnalyticsScreen() {
 
         <View style={styles.emptyState}>
           <View style={styles.emptyIconContainer}>
-            <BarChart3 size={64} color="#007AFF" />
+            <SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />
           </View>
           <Text style={styles.emptyTitle}>No hay datos disponibles</Text>
           <Text style={styles.emptySubtitle}>
@@ -115,7 +115,7 @@ export default function AnalyticsScreen() {
               value={formatCurrency(averageCost)}
               subtitle="Por suscripción"
               color="#34C759"
-              icon={<Target size={20} color="#34C759" />}
+              icon={<SymbolView name="target" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -123,7 +123,7 @@ export default function AnalyticsScreen() {
               value={mostExpensiveCategory ? mostExpensiveCategory[0] : 'N/A'}
               subtitle={mostExpensiveCategory ? formatCurrency(mostExpensiveCategory[1]) : ''}
               color="#FF9500"
-              icon={<PieChartIcon size={20} color="#FF9500" />}
+              icon={<SymbolView name="chart.pie" type="hierarchical" />}
             />
           </View>
 
@@ -133,7 +133,7 @@ export default function AnalyticsScreen() {
               value={formatCurrency(stats.totalAnnual)}
               subtitle="Proyección total"
               color="#007AFF"
-              icon={<Calendar size={20} color="#007AFF" />}
+              icon={<SymbolView name="calendar" type="hierarchical" />}
             />
             <View style={styles.statsSpacer} />
             <StatsCard
@@ -141,7 +141,7 @@ export default function AnalyticsScreen() {
               value={formatCurrency(stats.totalMonthly * 0.15)}
               subtitle="15% optimización"
               color="#5856D6"
-              icon={<DollarSign size={20} color="#5856D6" />}
+              icon={<SymbolView name="dollarsign" type="hierarchical" />}
             />
           </View>
         </View>
@@ -157,7 +157,7 @@ export default function AnalyticsScreen() {
                 </Text>
               </View>
               <View style={styles.sectionIcon}>
-                <PieChartIcon size={24} color="#007AFF" />
+                <SymbolView name="chart.pie" type="hierarchical" />
               </View>
             </View>
 
@@ -199,7 +199,7 @@ export default function AnalyticsScreen() {
                 </Text>
               </View>
               <View style={styles.sectionIcon}>
-                <BarChart3 size={24} color="#34C759" />
+                <SymbolView name="chart.bar.yaxis" type="hierarchical" />
               </View>
             </View>
 
@@ -231,14 +231,18 @@ export default function AnalyticsScreen() {
               </Text>
             </View>
             <View style={styles.sectionIcon}>
-              <TrendingUp size={24} color="#FF3B30" />
+              <SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />
             </View>
           </View>
 
           <View style={styles.insightsList}>
             <View style={styles.insightItem}>
               <View style={[styles.insightIcon, { backgroundColor: '#E8F5E8' }]}>
-                <TrendingUp size={20} color="#34C759" />
+                <SymbolView name="chart.line.uptrend.xyaxis" style={{
+                  width: 20,
+                  height: 20,
+                  margin: 5,
+                }} type="hierarchical" />
               </View>
               <View style={styles.insightContent}>
                 <Text style={styles.insightTitle}>Proyección Anual</Text>
@@ -255,7 +259,11 @@ export default function AnalyticsScreen() {
             {mostExpensiveCategory && (
               <View style={styles.insightItem}>
                 <View style={[styles.insightIcon, { backgroundColor: '#FFF4E6' }]}>
-                  <PieChartIcon size={20} color="#FF9500" />
+                  <SymbolView name="chart.pie" style={{
+                    width: 20,
+                    height: 20,
+                    margin: 5,
+                  }} type="hierarchical" />
                 </View>
                 <View style={styles.insightContent}>
                   <Text style={styles.insightTitle}>Categoría Dominante</Text>
@@ -272,7 +280,7 @@ export default function AnalyticsScreen() {
 
             <View style={styles.insightItem}>
               <View style={[styles.insightIcon, { backgroundColor: '#E6F3FF' }]}>
-                <Target size={20} color="#007AFF" />
+                <SymbolView name="target" type="hierarchical" />
               </View>
               <View style={styles.insightContent}>
                 <Text style={styles.insightTitle}>Optimización Sugerida</Text>
@@ -288,8 +296,6 @@ export default function AnalyticsScreen() {
           </View>
         </View>
 
-        {/* Bottom spacing */}
-        <View style={styles.bottomSpacing} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -496,8 +502,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
     maxWidth: 280,
-  },
-  bottomSpacing: {
-    height: 20,
   },
 });
