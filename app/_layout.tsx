@@ -37,6 +37,11 @@ export default function RootLayout() {
             presentation: 'modal',
             headerShown: true, title: 'Agregar Suscripción',
           }} />
+        <Stack.Screen name="settings"
+          options={{
+            presentation: 'modal',
+            headerShown: true, title: 'Configuración',
+          }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

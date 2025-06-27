@@ -44,7 +44,17 @@ export default function DashboardScreen() {
         }
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Dashboard</Text>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <Text style={styles.title}>Dashboard</Text>
+            <TouchableOpacity
+              onPress={() => router.push('/settings')}>
+              <SymbolView name="gear" type="hierarchical" />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.subtitle}>
             Resumen de tus suscripciones
           </Text>

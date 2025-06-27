@@ -23,7 +23,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({ size }) => (
             <SymbolView name="house" style={{
               width: size,
               height: size,
@@ -36,7 +36,7 @@ export default function TabLayout() {
         name="subscriptions"
         options={{
           title: 'Suscripciones',
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({ size }) => (
             <SymbolView name="creditcard" style={{
               width: size,
               height: size,
@@ -45,38 +45,12 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="add"
-        options={{
-          title: 'Agregar',
-          tabBarIcon: ({ size, color }) => (
-            <SymbolView name="plus" style={{
-              width: size,
-              height: size,
-              margin: 5,
-            }} type="hierarchical" />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="analytics"
         options={{
           title: 'Estadísticas',
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({ size }) => (
             <SymbolView name="chart.bar" style={{
-              width: size,
-              height: size,
-              margin: 5,
-            }} type="hierarchical" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: 'Ajustes',
-          tabBarIcon: ({ size, color }) => (
-            <SymbolView name="gear" style={{
               width: size,
               height: size,
               margin: 5,
