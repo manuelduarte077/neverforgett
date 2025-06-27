@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "Subscription",
-    "slug": "subscription",
+    "name": "Never Forgett",
+    "slug": "neverForgett",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "subscription",
+    "scheme": "neverForgett",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.manuelduarte077.subscription.app",
+      "bundleIdentifier": "dev.donmanuel.app.monthlyPayments",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "dev.manuelduarte077.subscription.app"
+      "package": "dev.donmanuel.app.monthlyPayments"
     },
     "web": {
       "bundler": "metro",
