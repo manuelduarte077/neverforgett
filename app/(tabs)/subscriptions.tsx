@@ -7,13 +7,13 @@ import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 
 export default function SubscriptionsScreen() {
-  const { 
-    subscriptions, 
-    loading, 
-    loadSubscriptions, 
+  const {
+    subscriptions,
+    loading,
+    loadSubscriptions,
     deleteSubscription,
     searchSubscriptions,
-    filterByCategory 
+    filterByCategory
   } = useSubscriptionStore();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,10 +44,10 @@ export default function SubscriptionsScreen() {
       `¿Estás seguro de que deseas eliminar "${name}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Eliminar', 
-          style: 'destructive', 
-          onPress: () => deleteSubscription(id) 
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: () => deleteSubscription(id)
         },
       ]
     );
@@ -61,7 +61,7 @@ export default function SubscriptionsScreen() {
   const filteredSubscriptions = getFilteredSubscriptions();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Suscripciones</Text>
         <Text style={styles.subtitle}>
@@ -81,7 +81,7 @@ export default function SubscriptionsScreen() {
           />
         </View>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.filterButton, showFilters && styles.filterButtonActive]}
           onPress={() => setShowFilters(!showFilters)}
         >
@@ -100,7 +100,7 @@ export default function SubscriptionsScreen() {
                 Todas
               </Text>
             </TouchableOpacity>
-            
+
             {SUBSCRIPTION_CATEGORIES.map((category) => (
               <TouchableOpacity
                 key={category}

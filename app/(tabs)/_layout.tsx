@@ -12,7 +12,7 @@ export default function TabLayout() {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#E5E5E7',
           paddingBottom: 8,
-          paddingTop: 8,
+          paddingTop: 6,
           height: 88,
         },
         tabBarLabelStyle: {
@@ -58,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Configuración',
+          title: 'Ajustes',
           tabBarIcon: ({ size, color }) => (
             <Settings size={size} color={color} />
           ),

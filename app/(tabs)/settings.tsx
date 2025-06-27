@@ -29,8 +29,8 @@ export default function SettingsScreen() {
       '¿Estás seguro de que deseas eliminar todas las suscripciones? Esta acción no se puede deshacer.',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Borrar Todo', 
+        {
+          text: 'Borrar Todo',
           style: 'destructive',
           onPress: () => {
             // This would need to be implemented in the store
@@ -57,13 +57,13 @@ export default function SettingsScreen() {
     );
   };
 
-  const SettingItem = ({ 
-    icon, 
-    title, 
-    subtitle, 
-    onPress, 
+  const SettingItem = ({
+    icon,
+    title,
+    subtitle,
+    onPress,
     color = '#1C1C1E',
-    showChevron = true 
+    showChevron = true
   }: {
     icon: React.ReactNode;
     title: string;
@@ -89,7 +89,7 @@ export default function SettingsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
           <Text style={styles.title}>Configuración</Text>
