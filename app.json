@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Never Forgett",
-    "slug": "neverForgett",
+    "slug": "neverforgett",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "neverForgett",
+    "scheme": "neverforgett",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -34,7 +34,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a26759de-9ca0-4f11-899b-e189aebe019a"
+        "projectId": "811341b7-0be6-4f9a-92b8-6b60b66171f4"
       }
     },
     "owner": "manuelduarte077"
