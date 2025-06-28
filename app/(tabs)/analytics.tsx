@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PieChart, BarChart } from 'react-native-chart-kit';
@@ -6,11 +6,43 @@ import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
 import { CATEGORY_COLORS } from '@/types/subscription';
 import { SymbolView } from 'expo-symbols';
+import { TrendChart } from '@/components/TrendChart';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function AnalyticsScreen() {
   const { subscriptions, loadSubscriptions, getStats } = useSubscriptionStore();
+
+  // Generar datos para el gráfico de tendencias
+  const trendData = useMemo(() => {
+    if (subscriptions.length === 0) {
+      return { data: [0], labels: ['Ene'] };
+    }
+    
+    const months = [];
+    const monthlyTotals = [];
+    const today = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+      const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthName = month.toLocaleDateString('es-ES', { month: 'short' });
+      months.push(monthName);
+      
+      const monthTotal = subscriptions.reduce((total, sub) => {
+        if (sub.frequency === 'monthly') {
+          return total + sub.cost;
+        }
+        else if (sub.frequency === 'annual') {
+          return total + (sub.cost / 12);
+        }
+        return total;
+      }, 0);
+      
+      monthlyTotals.push(monthTotal);
+    }
+    
+    return { data: monthlyTotals, labels: months };
+  }, [subscriptions]);
 
   useEffect(() => {
     loadSubscriptions();
@@ -184,6 +216,30 @@ export default function AnalyticsScreen() {
           </View>
         )}
 
+        {/* Tendencia de Gastos Mensuales */}
+        {subscriptions.length > 0 && (
+          <View style={styles.chartSection}>
+            <View style={styles.sectionHeader}>
+              <View>
+                <Text style={styles.sectionTitle}>Tendencia de Gastos</Text>
+                <Text style={styles.sectionSubtitle}>
+                  Evolución de gastos en los últimos 6 meses
+                </Text>
+              </View>
+              <View style={styles.sectionIcon}>
+                <SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />
+              </View>
+            </View>
+            
+            <TrendChart 
+              data={trendData.data} 
+              labels={trendData.labels} 
+              title="Gastos Mensuales" 
+              subtitle="Últimos 6 meses" 
+            />
+          </View>
+        )}
+        
         {/* Enhanced Monthly Spending by Category */}
         {barChartData.labels.length > 0 && (
           <View style={styles.chartSection}>
@@ -308,7 +364,6 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingBottom: 24,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },

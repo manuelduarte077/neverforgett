@@ -1,26 +1,139 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SymbolView } from 'expo-symbols';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import * as DocumentPicker from 'expo-document-picker';
+import { NotificationService } from '@/services/NotificationService';
 
 export default function SettingsScreen() {
-  const { subscriptions, loadSubscriptions } = useSubscriptionStore();
+  const { subscriptions, loadSubscriptions, addSubscription } = useSubscriptionStore();
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleExportData = () => {
-    Alert.alert(
-      'Exportar Datos',
-      'Esta función te permitiría exportar tus datos de suscripciones a un archivo JSON.',
-      [{ text: 'OK' }]
-    );
+  const handleExportData = async () => {
+    try {
+      setIsExporting(true);
+      const { subscriptions } = useSubscriptionStore.getState();
+      
+      if (subscriptions.length === 0) {
+        Alert.alert('Sin datos', 'No hay suscripciones para exportar.');
+        setIsExporting(false);
+        return;
+      }
+      
+      // Crear un archivo temporal con los datos
+      const dataToExport = JSON.stringify(subscriptions, null, 2);
+      const fileUri = `${FileSystem.documentDirectory}subscriptions_export_${Date.now()}.json`;
+      await FileSystem.writeAsStringAsync(fileUri, dataToExport);
+      
+      // Verificar si se puede compartir
+      const canShare = await Sharing.isAvailableAsync();
+      
+      if (canShare) {
+        // Compartir el archivo
+        await Sharing.shareAsync(fileUri, {
+          mimeType: 'application/json',
+          dialogTitle: 'Exportar Suscripciones',
+          UTI: 'public.json'
+        });
+      } else {
+        Alert.alert(
+          'Error',
+          'La función de compartir no está disponible en este dispositivo.'
+        );
+      }
+      
+      setIsExporting(false);
+    } catch (error) {
+      console.error('Error al exportar datos:', error);
+      Alert.alert('Error', 'No se pudieron exportar los datos.');
+      setIsExporting(false);
+    }
   };
 
-  const handleImportData = () => {
-    Alert.alert(
-      'Importar Datos',
-      'Esta función te permitiría importar datos de suscripciones desde un archivo.',
-      [{ text: 'OK' }]
-    );
+  const handleImportData = async () => {
+    try {
+      setIsImporting(true);
+      
+      // Seleccionar archivo JSON
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/json',
+        copyToCacheDirectory: true
+      });
+      
+      if (result.canceled) {
+        setIsImporting(false);
+        return;
+      }
+      
+      // Leer el contenido del archivo
+      const fileUri = result.assets[0].uri;
+      const fileContent = await FileSystem.readAsStringAsync(fileUri);
+      
+      try {
+        // Parsear el JSON
+        const importedData = JSON.parse(fileContent);
+        
+        // Validar que sea un array
+        if (!Array.isArray(importedData)) {
+          throw new Error('El formato del archivo no es válido');
+        }
+        
+        // Confirmar la importación
+        Alert.alert(
+          'Confirmar Importación',
+          `Se importarán ${importedData.length} suscripciones. ¿Deseas continuar?`,
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { 
+              text: 'Importar', 
+              onPress: async () => {
+                try {
+                  // Importar cada suscripción
+                  for (const sub of importedData) {
+                    // Omitir id, createdAt y updatedAt para que se generen nuevos
+                    const { id, createdAt, updatedAt, ...subscriptionData } = sub;
+                    
+                    // Si hay un recordatorio, convertir la hora de string a Date
+                    if (subscriptionData.reminder && subscriptionData.reminder.time) {
+                      subscriptionData.reminder = {
+                        ...subscriptionData.reminder,
+                        time: new Date(subscriptionData.reminder.time)
+                      };
+                    }
+                    
+                    await addSubscription(subscriptionData);
+                  }
+                  
+                  Alert.alert(
+                    'Importación Exitosa',
+                    `Se han importado ${importedData.length} suscripciones correctamente.`,
+                    [{ text: 'OK' }]
+                  );
+                } catch (error) {
+                  console.error('Error al importar suscripciones:', error);
+                  Alert.alert('Error', 'No se pudieron importar algunas suscripciones.');
+                }
+              } 
+            }
+          ]
+        );
+      } catch (error) {
+        console.error('Error al parsear JSON:', error);
+        Alert.alert('Error', 'El archivo seleccionado no tiene un formato JSON válido.');
+      }
+      
+      setIsImporting(false);
+    } catch (error) {
+      console.error('Error al importar datos:', error);
+      Alert.alert('Error', 'No se pudieron importar los datos.');
+      setIsImporting(false);
+    }
   };
 
   const handleClearAllData = () => {
@@ -32,20 +145,108 @@ export default function SettingsScreen() {
         {
           text: 'Borrar Todo',
           style: 'destructive',
-          onPress: () => {
-            Alert.alert('Función no implementada', 'Esta funcionalidad se implementaría en una versión completa.');
+          onPress: async () => {
+            try {
+              // Obtener el store y limpiar las suscripciones
+              const store = useSubscriptionStore.getState();
+              
+              // Guardar un array vacío en AsyncStorage
+              await AsyncStorage.setItem('subscriptions', JSON.stringify([]));
+              
+              // Actualizar el estado del store
+              store.loadSubscriptions();
+              
+              Alert.alert('Datos eliminados', 'Todas las suscripciones han sido eliminadas correctamente.');
+            } catch (error) {
+              Alert.alert('Error', 'No se pudieron eliminar los datos.');
+            }
           }
         },
       ]
     );
   };
 
-  const handleNotificationSettings = () => {
-    Alert.alert(
-      'Configuración de Notificaciones',
-      'Aquí podrías configurar cuándo y cómo recibir recordatorios de renovación.',
-      [{ text: 'OK' }]
-    );
+  const handleNotificationSettings = async () => {
+    try {
+      const hasPermission = await NotificationService.requestPermissions();
+      
+      if (hasPermission) {
+        Alert.alert(
+          'Configuración de Notificaciones',
+          'Configura cuándo quieres recibir recordatorios de renovación',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: '1 día antes', onPress: () => configureNotifications(1) },
+            { text: '3 días antes', onPress: () => configureNotifications(3) },
+            { text: '7 días antes', onPress: () => configureNotifications(7) }
+          ]
+        );
+      } else {
+        Alert.alert(
+          'Permisos Denegados',
+          'No se han concedido permisos para enviar notificaciones. Por favor, actívalos en la configuración de tu dispositivo para recibir recordatorios.',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { 
+              text: 'Ir a Configuración', 
+              onPress: async () => {
+                await Linking.openSettings();
+              }
+            }
+          ]
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'Ha ocurrido un error al configurar las notificaciones.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+  
+  const configureNotifications = async (days: number) => {
+    try {
+      setIsLoading(true);
+      
+      // Guardar la preferencia del usuario
+      await AsyncStorage.setItem('notificationDays', days.toString());
+      
+      // Obtener todas las suscripciones
+      const { subscriptions } = useSubscriptionStore.getState();
+      
+      // Programar notificaciones para todas las suscripciones
+      let scheduledCount = 0;
+      
+      for (const subscription of subscriptions) {
+        // Crear un recordatorio con los días especificados
+        const reminderTime = new Date();
+        const reminderData = {
+          enabled: true,
+          daysInAdvance: days,
+          time: reminderTime
+        };
+        
+        // Actualizar la suscripción con el nuevo recordatorio
+        const store = useSubscriptionStore.getState();
+        const success = await store.setSubscriptionReminder(subscription.id, reminderData);
+        
+        if (success) {
+          scheduledCount++;
+        }
+      }
+      
+      setIsLoading(false);
+      
+      Alert.alert(
+        'Notificaciones Configuradas',
+        `Se han programado recordatorios ${days} día(s) antes de cada renovación para ${scheduledCount} suscripciones.`,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      setIsLoading(false);
+      Alert.alert('Error', 'No se pudieron configurar las notificaciones.');
+    }
   };
 
   const handleAbout = () => {
@@ -62,7 +263,8 @@ export default function SettingsScreen() {
     subtitle,
     onPress,
     color = '#1C1C1E',
-    showChevron = true
+    showChevron = true,
+    disabled = false
   }: {
     icon: React.ReactNode;
     title: string;
@@ -70,8 +272,13 @@ export default function SettingsScreen() {
     onPress: () => void;
     color?: string;
     showChevron?: boolean;
+    disabled?: boolean;
   }) => (
-    <TouchableOpacity style={styles.settingItem} onPress={onPress}>
+    <TouchableOpacity 
+      style={[styles.settingItem, disabled && styles.settingItemDisabled]} 
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={styles.settingIcon}>
         {icon}
       </View>
@@ -123,10 +330,13 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Notificaciones</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<SymbolView name="bell" type="hierarchical" />}
-              title="Recordatorios"
+              icon={isLoading ? 
+                <ActivityIndicator size="small" color="#007AFF" /> : 
+                <SymbolView name="bell" type="hierarchical" />}
+              title={isLoading ? "Configurando..." : "Recordatorios"}
               subtitle="Configurar notificaciones de renovación"
               onPress={handleNotificationSettings}
+              disabled={isLoading}
             />
           </View>
         </View>
@@ -136,16 +346,22 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Gestión de Datos</Text>
           <View style={styles.settingsList}>
             <SettingItem
-              icon={<SymbolView name="arrow.down.circle" type="hierarchical" />}
-              title="Exportar Datos"
+              icon={isExporting ? 
+                <ActivityIndicator size="small" color="#007AFF" /> : 
+                <SymbolView name="arrow.down.circle" type="hierarchical" />}
+              title={isExporting ? "Exportando..." : "Exportar Datos"}
               subtitle="Guardar tus suscripciones en un archivo"
               onPress={handleExportData}
+              disabled={isExporting}
             />
             <SettingItem
-              icon={<SymbolView name="arrow.up.circle" type="hierarchical" />}
-              title="Importar Datos"
+              icon={isImporting ? 
+                <ActivityIndicator size="small" color="#007AFF" /> : 
+                <SymbolView name="arrow.up.circle" type="hierarchical" />}
+              title={isImporting ? "Importando..." : "Importar Datos"}
               subtitle="Cargar suscripciones desde un archivo"
               onPress={handleImportData}
+              disabled={isImporting}
             />
           </View>
         </View>
@@ -277,9 +493,13 @@ const styles = StyleSheet.create({
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#F2F2F7',
+  },
+  settingItemDisabled: {
+    opacity: 0.5,
   },
   settingIcon: {
     width: 32,

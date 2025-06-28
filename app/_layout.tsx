@@ -42,6 +42,11 @@ export default function RootLayout() {
             presentation: 'modal',
             headerShown: true, title: 'Configuración',
           }} />
+        <Stack.Screen name="subscription/[id]"
+          options={{
+            presentation: 'modal',
+            headerShown: true, title: 'Suscripción',
+          }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
