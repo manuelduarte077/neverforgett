@@ -7,13 +7,13 @@ import { StatsCard } from '@/components/StatsCard';
 import { CATEGORY_COLORS } from '@/types/subscription';
 import { SymbolView } from 'expo-symbols';
 import { TrendChart } from '@/components/TrendChart';
+import { StatusBar } from 'expo-status-bar';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function AnalyticsScreen() {
   const { subscriptions, loadSubscriptions, getStats } = useSubscriptionStore();
 
-  // Generar datos para el gráfico de tendencias
   const trendData = useMemo(() => {
     if (subscriptions.length === 0) {
       return { data: [0], labels: ['Ene'] };
@@ -109,6 +109,7 @@ export default function AnalyticsScreen() {
   if (subscriptions.length === 0) {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar style="dark" />
         <View style={styles.header}>
           <Text style={styles.title}>Estadísticas</Text>
           <Text style={styles.subtitle}>
@@ -131,7 +132,8 @@ export default function AnalyticsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <StatusBar style="dark" />  
+      <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
           <Text style={styles.title}>Estadísticas</Text>
           <Text style={styles.subtitle}>
@@ -356,7 +358,7 @@ export default function AnalyticsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: '#F2F2F7',
   },
   scrollView: {
     flex: 1,

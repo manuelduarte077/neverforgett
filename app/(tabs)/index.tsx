@@ -6,6 +6,7 @@ import { StatsCard } from '@/components/StatsCard';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 export default function DashboardScreen() {
   const {
@@ -37,6 +38,7 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar style="dark" />
       <ScrollView
         style={styles.scrollView}
         refreshControl={

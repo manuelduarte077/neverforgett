@@ -5,6 +5,7 @@ import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { SymbolView } from 'expo-symbols';
+import { StatusBar } from 'expo-status-bar';
 
 export default function SubscriptionsScreen() {
   const {
@@ -62,6 +63,7 @@ export default function SubscriptionsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>Suscripciones</Text>
         <Text style={styles.subtitle}>
