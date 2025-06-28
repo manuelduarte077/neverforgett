@@ -9,6 +9,11 @@ export interface Subscription {
   color: string;
   createdAt: string;
   updatedAt: string;
+  reminder?: {
+    enabled: boolean;
+    daysInAdvance: number;
+    time: string; // ISO string
+  };
 }
 
 export interface SubscriptionStats {

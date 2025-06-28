@@ -1,15 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SymbolView } from 'expo-symbols';
+import { router } from 'expo-router';
 import { Subscription } from '@/types/subscription';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
   onPress?: () => void;
   onMorePress?: () => void;
+  onReminderPress?: () => void;
 }
 
-export function SubscriptionCard({ subscription, onPress, onMorePress }: SubscriptionCardProps) {
+export function SubscriptionCard({ subscription, onPress, onMorePress, onReminderPress }: SubscriptionCardProps) {
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      router.push(`/subscription/${subscription.id}`);
+    }
+  };
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
@@ -37,7 +46,7 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
   const isUpcoming = daysUntilRenewal <= 7 && daysUntilRenewal >= 0;
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <View style={[styles.colorBar, { backgroundColor: subscription.color }]} />
 
       <View style={styles.content}>
@@ -47,10 +56,16 @@ export function SubscriptionCard({ subscription, onPress, onMorePress }: Subscri
             <Text style={styles.category}>{subscription.category}</Text>
           </View>
 
-          <TouchableOpacity onPress={onMorePress} style={styles.moreButton}>
-            <SymbolView name="ellipsis" type="hierarchical" />
-
-          </TouchableOpacity>
+          <View style={styles.actionButtons}>
+            {subscription.reminder?.enabled && (
+              <TouchableOpacity onPress={onReminderPress} style={styles.reminderButton}>
+                <SymbolView name="bell.fill" type="hierarchical" colors="#007AFF" />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={onMorePress} style={styles.moreButton}>
+              <SymbolView name="ellipsis" type="hierarchical" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.details}>
@@ -125,6 +140,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     fontSize: 12,
     color: '#8E8E93',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reminderButton: {
+    padding: 4,
+    marginRight: 8,
   },
   moreButton: {
     padding: 4,

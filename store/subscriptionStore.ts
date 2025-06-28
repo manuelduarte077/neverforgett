@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subscription, SubscriptionStats, CATEGORY_COLORS } from '@/types/subscription';
+import { NotificationService } from '@/services/NotificationService';
+
+interface ReminderData {
+  enabled: boolean;
+  daysInAdvance: number;
+  time: Date;
+}
 
 interface SubscriptionStore {
   subscriptions: Subscription[];
@@ -11,6 +18,7 @@ interface SubscriptionStore {
   loadSubscriptions: () => Promise<void>;
   addSubscription: (subscription: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateSubscription: (id: string, updates: Partial<Subscription>) => Promise<void>;
+  setSubscriptionReminder: (id: string, reminderData: ReminderData | undefined) => Promise<boolean>;
   deleteSubscription: (id: string) => Promise<void>;
   getStats: () => SubscriptionStats;
   getUpcomingRenewals: (days?: number) => Subscription[];
@@ -71,6 +79,53 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al actualizar suscripción', loading: false });
+    }
+  },
+  
+  setSubscriptionReminder: async (id: string, reminderData?: ReminderData) => {
+    set({ loading: true, error: null });
+    try {
+      const { subscriptions } = get();
+      const subscription = subscriptions.find(sub => sub.id === id);
+      
+      if (!subscription) {
+        throw new Error('Suscripción no encontrada');
+      }
+      
+      // Convertir la fecha a string ISO para almacenamiento
+      const reminderToSave = reminderData ? {
+        ...reminderData,
+        time: reminderData.time.toISOString()
+      } : undefined;
+      
+      const updatedSubscriptions = subscriptions.map(sub =>
+        sub.id === id
+          ? { 
+              ...sub, 
+              reminder: reminderToSave,
+              updatedAt: new Date().toISOString() 
+            }
+          : sub
+      );
+
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      set({ subscriptions: updatedSubscriptions, loading: false });
+      
+      // Programar la notificación si hay un recordatorio
+      if (reminderToSave && reminderToSave.enabled) {
+        const subscription = updatedSubscriptions.find(sub => sub.id === id);
+        if (subscription) {
+          await NotificationService.scheduleSubscriptionReminder(subscription);
+        }
+      } else {
+        // Si se desactivó el recordatorio, cancelar las notificaciones
+        await NotificationService.cancelSubscriptionReminders(id);
+      }
+      
+      return true;
+    } catch (error) {
+      set({ error: 'Error al configurar recordatorio', loading: false });
+      return false;
     }
   },
 
