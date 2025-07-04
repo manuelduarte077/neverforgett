@@ -9,7 +9,7 @@ export interface QuickActionItem {
   id: string;
   title: string;
   subtitle?: string | null;
-  icon?: string | null; // iOS system icon name
+  icon?: string | null;
   params?: Record<string, number | string | boolean | null | undefined> | null;
 }
 
@@ -19,21 +19,21 @@ const quickActionItems: Record<QuickActionType, QuickActionItem> = {
     id: 'add-subscription',
     title: 'Agregar Suscripción',
     subtitle: 'Añadir nueva suscripción',
-    icon: 'plus', // iOS system icon name
+    icon: 'add',
     params: { href: '/add' },
   },
   'view-subscriptions': {
     id: 'view-subscriptions',
     title: 'Ver Suscripciones',
     subtitle: 'Lista de suscripciones',
-    icon: 'creditcard', // iOS system icon name
+    icon: 'symbol:list.bullet',
     params: { href: '/(tabs)/subscriptions' },
   },
   'view-analytics': {
     id: 'view-analytics',
     title: 'Estadísticas',
     subtitle: 'Ver estadísticas',
-    icon: 'chart.bar', // iOS system icon name
+    icon: 'symbol:chart.bar',
     params: { href: '/(tabs)/analytics' },
   },
 };

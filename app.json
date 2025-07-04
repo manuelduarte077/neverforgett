@@ -8,6 +8,9 @@
     "scheme": "neverforgett",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "dev.donmanuel.app.monthlyPayments",
@@ -16,7 +19,11 @@
       }
     },
     "android": {
-      "package": "dev.donmanuel.app.monthlyPayments"
+      "package": "dev.donmanuel.app.monthlyPayments",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
       "bundler": "metro",
