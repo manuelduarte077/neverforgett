@@ -2,7 +2,6 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { Subscription } from '@/types/subscription';
 
-// Configurar el comportamiento de las notificaciones
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -14,18 +13,14 @@ Notifications.setNotificationHandler({
 });
 
 export class NotificationService {
-  // Solicitar permisos para notificaciones
   static async requestPermissions() {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
-    // Si no tenemos permisos, solicitarlos
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-
-    // Si no se concedieron permisos, no podemos mostrar notificaciones
     if (finalStatus !== 'granted') {
       return false;
     }
@@ -42,41 +37,31 @@ export class NotificationService {
     return true;
   }
 
-  // Programar una notificación para una suscripción
   static async scheduleSubscriptionReminder(subscription: Subscription) {
     if (!subscription.reminder || !subscription.reminder.enabled) {
       return null;
     }
-
-    // Verificar permisos
     const hasPermission = await this.requestPermissions();
     if (!hasPermission) {
       return null;
     }
 
     try {
-      // Calcular la fecha de renovación
       const renewalDate = new Date(subscription.renewalDate);
-      
-      // Calcular la fecha de notificación (X días antes)
       const notificationDate = new Date(renewalDate);
-      notificationDate.setDate(notificationDate.getDate() - subscription.reminder.daysInAdvance);
       
-      // Establecer la hora de la notificación
+      notificationDate.setDate(notificationDate.getDate() - subscription.reminder.daysInAdvance);
       const reminderTime = new Date(subscription.reminder.time);
+      
       notificationDate.setHours(reminderTime.getHours());
       notificationDate.setMinutes(reminderTime.getMinutes());
       notificationDate.setSeconds(0);
       
-      // Si la fecha ya pasó, no programar
       if (notificationDate <= new Date()) {
         return null;
       }
-
-      // Cancelar notificaciones existentes para esta suscripción
       await this.cancelSubscriptionReminders(subscription.id);
 
-      // Programar la nueva notificación
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
           title: `Recordatorio: ${subscription.name}`,
@@ -96,7 +81,6 @@ export class NotificationService {
     }
   }
 
-  // Cancelar todas las notificaciones para una suscripción
   static async cancelSubscriptionReminders(subscriptionId: string) {
     try {
       const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
@@ -111,7 +95,6 @@ export class NotificationService {
     }
   }
 
-  // Cancelar todas las notificaciones
   static async cancelAllNotifications() {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
