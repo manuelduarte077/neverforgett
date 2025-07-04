@@ -5,6 +5,7 @@ import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useFonts } from 'expo-font';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
+import { initQuickActions } from '@/services/quickActionsService';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +24,23 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  // Initialize quick actions
+  useEffect(() => {
+    let cleanupFn: (() => void) | undefined;
+    
+    const setupQuickActions = async () => {
+      cleanupFn = await initQuickActions();
+    };
+    
+    setupQuickActions();
+    
+    return () => {
+      if (cleanupFn && typeof cleanupFn === 'function') {
+        cleanupFn();
+      }
+    };
+  }, []);
 
   if (!fontsLoaded && !fontError) {
     return null;
