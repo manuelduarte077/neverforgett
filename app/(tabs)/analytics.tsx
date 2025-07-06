@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PieChart, BarChart } from 'react-native-chart-kit';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
 import { CATEGORY_COLORS } from '@/types/subscription';
 import { SymbolView } from 'expo-symbols';
-import { TrendChart } from '@/components/TrendChart';
+import { BarChartComponent } from '@/components/BarChartComponent';
+import { InsightsComponent } from '@/components/InsightsComponent';
+import { SFSymbol } from 'expo-symbols';
 import { StatusBar } from 'expo-status-bar';
 
 const screenWidth = Dimensions.get('window').width;
@@ -57,15 +58,6 @@ export default function AnalyticsScreen() {
       minimumFractionDigits: 0,
     }).format(amount);
   };
-
-  // Prepare data for pie chart
-  const pieChartData = Object.entries(stats.categoryBreakdown).map(([category, amount]) => ({
-    name: category,
-    population: amount,
-    color: CATEGORY_COLORS[category] || CATEGORY_COLORS.Otros,
-    legendFontColor: '#1C1C1E',
-    legendFontSize: 12,
-  }));
 
   // Prepare data for bar chart - Monthly costs by category
   const barChartData = {
@@ -176,179 +168,48 @@ export default function AnalyticsScreen() {
           </View>
         </View>
 
-        {/* Enhanced Category Distribution */}
-        {pieChartData.length > 0 && (
-          <View style={styles.chartSection}>
-            <View style={styles.sectionHeader}>
-              <View>
-                <Text style={styles.sectionTitle}>Distribución por Categorías</Text>
-                <Text style={styles.sectionSubtitle}>
-                  Gasto mensual por categoría
-                </Text>
-              </View>
-              <View style={styles.sectionIcon}>
-                <SymbolView name="chart.pie" type="hierarchical" />
-              </View>
-            </View>
 
-            <View style={styles.chartContainer}>
-              <PieChart
-                data={pieChartData}
-                width={screenWidth - 80}
-                height={220}
-                chartConfig={chartConfig}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                center={[10, 0]}
-                absolute
-              />
-
-              {/* Enhanced Legend */}
-              <View style={styles.legendContainer}>
-                {pieChartData.map((item, index) => (
-                  <View key={index} style={styles.legendItem}>
-                    <View style={[styles.legendColor, { backgroundColor: item.color }]} />
-                    <Text style={styles.legendText}>{item.name}</Text>
-                    <Text style={styles.legendValue}>{formatCurrency(item.population)}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Tendencia de Gastos Mensuales */}
-        {subscriptions.length > 0 && (
-          <View style={styles.chartSection}>
-            <View style={styles.sectionHeader}>
-              <View>
-                <Text style={styles.sectionTitle}>Tendencia de Gastos</Text>
-                <Text style={styles.sectionSubtitle}>
-                  Evolución de gastos en los últimos 6 meses
-                </Text>
-              </View>
-              <View style={styles.sectionIcon}>
-                <SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />
-              </View>
-            </View>
-            
-            <TrendChart 
-              data={trendData.data} 
-              labels={trendData.labels} 
-              title="Gastos Mensuales" 
-              subtitle="Últimos 6 meses" 
-            />
-          </View>
-        )}
         
         {/* Enhanced Monthly Spending by Category */}
         {barChartData.labels.length > 0 && (
-          <View style={styles.chartSection}>
-            <View style={styles.sectionHeader}>
-              <View>
-                <Text style={styles.sectionTitle}>Comparativa por Categoría</Text>
-                <Text style={styles.sectionSubtitle}>
-                  Análisis comparativo de gastos mensuales
-                </Text>
-              </View>
-              <View style={styles.sectionIcon}>
-                <SymbolView name="chart.bar.yaxis" type="hierarchical" />
-              </View>
-            </View>
-
-            <View style={styles.chartContainer}>
-              <BarChart
-                data={barChartData}
-                width={screenWidth - 80}
-                height={220}
-                chartConfig={{
-                  ...chartConfig,
-                  decimalPlaces: 0,
-                }}
-                verticalLabelRotation={0}
-                showValuesOnTopOfBars
-                withCustomBarColorFromData
-                flatColor
-                fromZero yAxisLabel={''} yAxisSuffix={''} />
-            </View>
-          </View>
+          <BarChartComponent
+            data={barChartData}
+            title="Comparativa por Categoría"
+            subtitle="Análisis comparativo de gastos mensuales"
+          />
         )}
 
         {/* Enhanced Insights */}
-        <View style={styles.insightsSection}>
-          <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.sectionTitle}>Insights Inteligentes</Text>
-              <Text style={styles.sectionSubtitle}>
-                Análisis automático de tus patrones de gasto
-              </Text>
-            </View>
-            <View style={styles.sectionIcon}>
-              <SymbolView name="chart.line.uptrend.xyaxis" type="hierarchical" />
-            </View>
-          </View>
-
-          <View style={styles.insightsList}>
-            <View style={styles.insightItem}>
-              <View style={[styles.insightIcon, { backgroundColor: '#E8F5E8' }]}>
-                <SymbolView name="chart.line.uptrend.xyaxis" style={{
-                  width: 20,
-                  height: 20,
-                  margin: 5,
-                }} type="hierarchical" />
-              </View>
-              <View style={styles.insightContent}>
-                <Text style={styles.insightTitle}>Proyección Anual</Text>
-                <Text style={styles.insightDescription}>
-                  Basado en tus suscripciones actuales, gastarás {formatCurrency(stats.totalAnnual)} este año
-                </Text>
-                <View style={styles.insightMetric}>
-                  <Text style={styles.insightMetricValue}>{formatCurrency(stats.totalAnnual / 12)}</Text>
-                  <Text style={styles.insightMetricLabel}>promedio mensual</Text>
-                </View>
-              </View>
-            </View>
-
-            {mostExpensiveCategory && (
-              <View style={styles.insightItem}>
-                <View style={[styles.insightIcon, { backgroundColor: '#FFF4E6' }]}>
-                  <SymbolView name="chart.pie" style={{
-                    width: 20,
-                    height: 20,
-                    margin: 5,
-                  }} type="hierarchical" />
-                </View>
-                <View style={styles.insightContent}>
-                  <Text style={styles.insightTitle}>Categoría Dominante</Text>
-                  <Text style={styles.insightDescription}>
-                    {mostExpensiveCategory[0]} representa el {Math.round((mostExpensiveCategory[1] / stats.totalMonthly) * 100)}% de tu presupuesto mensual
-                  </Text>
-                  <View style={styles.insightMetric}>
-                    <Text style={styles.insightMetricValue}>{formatCurrency(mostExpensiveCategory[1])}</Text>
-                    <Text style={styles.insightMetricLabel}>gasto mensual</Text>
-                  </View>
-                </View>
-              </View>
-            )}
-
-            <View style={styles.insightItem}>
-              <View style={[styles.insightIcon, { backgroundColor: '#E6F3FF' }]}>
-                <SymbolView name="target" type="hierarchical" />
-              </View>
-              <View style={styles.insightContent}>
-                <Text style={styles.insightTitle}>Optimización Sugerida</Text>
-                <Text style={styles.insightDescription}>
-                  Podrías ahorrar hasta {formatCurrency(stats.totalMonthly * 0.15)} al mes revisando suscripciones poco utilizadas
-                </Text>
-                <View style={styles.insightMetric}>
-                  <Text style={styles.insightMetricValue}>{formatCurrency(stats.totalMonthly * 0.15 * 12)}</Text>
-                  <Text style={styles.insightMetricLabel}>ahorro anual potencial</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
+        <InsightsComponent
+          title="Insights Inteligentes"
+          subtitle="Análisis automático de tus patrones de gasto"
+          insights={[
+            {
+              title: "Proyección Anual",
+              description: `Basado en tus suscripciones actuales, gastarás ${formatCurrency(stats.totalAnnual)} este año`,
+              metricValue: formatCurrency(stats.totalAnnual / 12),
+              metricLabel: "promedio mensual",
+              iconName: "chart.line.uptrend.xyaxis" as SFSymbol,
+              iconBackground: "#E8F5E8"
+            },
+            ...(mostExpensiveCategory ? [{
+              title: "Categoría Dominante",
+              description: `${mostExpensiveCategory[0]} representa el ${Math.round((mostExpensiveCategory[1] / stats.totalMonthly) * 100)}% de tu presupuesto mensual`,
+              metricValue: formatCurrency(mostExpensiveCategory[1]),
+              metricLabel: "gasto mensual",
+              iconName: "chart.pie" as SFSymbol,
+              iconBackground: "#FFF4E6"
+            }] : []),
+            {
+              title: "Optimización Sugerida",
+              description: `Podrías ahorrar hasta ${formatCurrency(stats.totalMonthly * 0.15)} al mes revisando suscripciones poco utilizadas`,
+              metricValue: formatCurrency(stats.totalMonthly * 0.15 * 12),
+              metricLabel: "ahorro anual potencial",
+              iconName: "target" as SFSymbol,
+              iconBackground: "#E6F3FF"
+            }
+          ]}
+        />
 
       </ScrollView>
     </SafeAreaView>
@@ -392,6 +253,7 @@ const styles = StyleSheet.create({
   statsSpacer: {
     width: 12,
   },
+  // These styles are still needed for the TrendChart section
   chartSection: {
     paddingHorizontal: 20,
     marginBottom: 32,
@@ -421,109 +283,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FA',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  chartContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 8,
-    alignItems: 'center',
-  },
-  legendContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-  },
-  legendColor: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 12,
-  },
-  legendText: {
-    flex: 1,
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#1C1C1E',
-  },
-  legendValue: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 14,
-    color: '#007AFF',
-  },
-  insightsSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
-  },
-  insightsList: {
-    marginTop: 20,
-  },
-  insightItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  insightIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
-  insightContent: {
-    flex: 1,
-  },
-  insightTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#1C1C1E',
-    marginBottom: 6,
-  },
-  insightDescription: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  insightMetric: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  insightMetricValue: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 18,
-    color: '#007AFF',
-    marginRight: 8,
-  },
-  insightMetricLabel: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#8E8E93',
   },
   emptyState: {
     flex: 1,
