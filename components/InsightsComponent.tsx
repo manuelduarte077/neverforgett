@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SymbolView, SFSymbol } from 'expo-symbols';
+import { theme } from '@/styles/theme';
 
 interface InsightItem {
   title: string;
@@ -61,25 +62,25 @@ export const InsightsComponent = ({ title, subtitle, insights }: InsightsCompone
 
 const styles = StyleSheet.create({
   insightsSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
+    paddingHorizontal: theme.spacing.xl,
+    paddingBottom: theme.spacing['3xl'],
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 20,
+    marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 22,
-    color: '#1C1C1E',
-    marginBottom: 4,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize['2xl'],
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
   sectionSubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
     lineHeight: 20,
   },
   sectionIcon: {
@@ -91,23 +92,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   insightsList: {
-    marginTop: 20,
+    marginTop: theme.spacing.xl,
   },
   insightItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 4,
+    ...theme.shadows.sm,
   },
   insightIcon: {
     width: 44,
@@ -115,37 +109,37 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    marginRight: theme.spacing.lg,
   },
   insightContent: {
     flex: 1,
   },
   insightTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#1C1C1E',
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
     marginBottom: 6,
   },
   insightDescription: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
     lineHeight: 20,
-    marginBottom: 12,
+    marginBottom: theme.spacing.md,
   },
   insightMetric: {
     flexDirection: 'row',
     alignItems: 'baseline',
   },
   insightMetricValue: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 18,
-    color: '#007AFF',
-    marginRight: 8,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.primary,
+    marginRight: theme.spacing.sm,
   },
   insightMetricLabel: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
   },
 });

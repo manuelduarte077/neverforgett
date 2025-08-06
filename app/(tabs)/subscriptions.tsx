@@ -6,6 +6,8 @@ import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { SymbolView } from 'expo-symbols';
 import { StatusBar } from 'expo-status-bar';
+import { commonStyles } from '@/styles/common';
+import { theme } from '@/styles/theme';
 
 export default function SubscriptionsScreen() {
   const {
@@ -62,11 +64,11 @@ export default function SubscriptionsScreen() {
   const filteredSubscriptions = getFilteredSubscriptions();
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={commonStyles.container} edges={['top']}>
       <StatusBar style="dark" />
-      <View style={styles.header}>
-        <Text style={styles.title}>Suscripciones</Text>
-        <Text style={styles.subtitle}>
+      <View style={commonStyles.header}>
+        <Text style={commonStyles.title}>Suscripciones</Text>
+        <Text style={commonStyles.subtitle}>
           {subscriptions.length} suscripción{subscriptions.length !== 1 ? 'es' : ''} total{subscriptions.length !== 1 ? 'es' : ''}
         </Text>
       </View>
@@ -79,7 +81,7 @@ export default function SubscriptionsScreen() {
             placeholder="Buscar suscripciones..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.text.secondary}
           />
         </View>
 
@@ -160,113 +162,94 @@ export default function SubscriptionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 16,
-  },
-  title: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 32,
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: '#8E8E93',
-  },
   searchSection: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
     alignItems: 'center',
   },
   searchContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginRight: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.md,
+    marginRight: theme.spacing.md,
   },
   searchInput: {
     flex: 1,
-    marginLeft: 8,
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: '#1C1C1E',
+    marginLeft: theme.spacing.sm,
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   filterButton: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
   },
   filterButtonActive: {
     backgroundColor: '#E3F2FD',
   },
   filtersContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 16,
+    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
   },
   categoriesScroll: {
-    marginBottom: 12,
+    marginBottom: theme.spacing.md,
   },
   categoryChip: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.surface,
     borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
     borderWidth: 1,
-    borderColor: '#E5E5E7',
+    borderColor: theme.colors.border,
   },
   categoryChipActive: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
   categoryChipText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
   },
   categoryChipTextActive: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
   },
   clearFiltersButton: {
     alignSelf: 'flex-start',
   },
   clearFiltersText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#007AFF',
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.primary,
   },
   subscriptionsList: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: theme.spacing.xl,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 48,
-    paddingHorizontal: 20,
+    paddingVertical: theme.spacing['4xl'],
+    paddingHorizontal: theme.spacing.xl,
   },
   emptyTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 18,
-    color: '#1C1C1E',
-    marginTop: 16,
-    marginBottom: 8,
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.text.primary,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
   },
   emptySubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
     lineHeight: 20,
   },

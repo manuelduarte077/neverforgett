@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
@@ -9,11 +9,15 @@ import { BarChartComponent } from '@/components/BarChartComponent';
 import { InsightsComponent } from '@/components/InsightsComponent';
 import { SFSymbol } from 'expo-symbols';
 import { StatusBar } from 'expo-status-bar';
+import { useCurrency } from '@/hooks/useCurrency';
+import { commonStyles } from '@/styles/common';
+import { theme } from '@/styles/theme';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function AnalyticsScreen() {
   const { subscriptions, loadSubscriptions, getStats } = useSubscriptionStore();
+  const { formatCurrencyCompact } = useCurrency();
 
   const trendData = useMemo(() => {
     if (subscriptions.length === 0) {
@@ -51,14 +55,6 @@ export default function AnalyticsScreen() {
 
   const stats = getStats();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
   // Prepare data for bar chart - Monthly costs by category
   const barChartData = {
     labels: Object.keys(stats.categoryBreakdown).map(cat =>
@@ -83,28 +79,13 @@ export default function AnalyticsScreen() {
   const mostExpensiveCategory = Object.entries(stats.categoryBreakdown)
     .sort(([, a], [, b]) => b - a)[0];
 
-  const chartConfig = {
-    backgroundColor: '#FFFFFF',
-    backgroundGradientFrom: '#FFFFFF',
-    backgroundGradientTo: '#FFFFFF',
-    color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(28, 28, 30, ${opacity})`,
-    strokeWidth: 2,
-    barPercentage: 0.7,
-    useShadowColorFromDataset: false,
-    propsForLabels: {
-      fontFamily: 'Inter-Regular',
-      fontSize: 10,
-    },
-  };
-
   if (subscriptions.length === 0) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar style="dark" />
-        <View style={styles.header}>
-          <Text style={styles.title}>Estadísticas</Text>
-          <Text style={styles.subtitle}>
+      <SafeAreaView style={commonStyles.container} edges={['top']}>
+        <StatusBar style="dark" />
+        <View style={commonStyles.header}>
+          <Text style={commonStyles.title}>Estadísticas</Text>
+          <Text style={commonStyles.subtitle}>
             Análisis de tus gastos en suscripciones
           </Text>
         </View>
@@ -123,12 +104,12 @@ export default function AnalyticsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={commonStyles.container} edges={['top']}>
       <StatusBar style="dark" />  
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Estadísticas</Text>
-          <Text style={styles.subtitle}>
+      <ScrollView style={commonStyles.scrollView}>
+        <View style={commonStyles.header}>
+          <Text style={commonStyles.title}>Estadísticas</Text>
+          <Text style={commonStyles.subtitle}>
             Análisis detallado de tus gastos en suscripciones
           </Text>
         </View>
@@ -138,38 +119,36 @@ export default function AnalyticsScreen() {
           <View style={styles.statsRow}>
             <StatsCard
               title="Promedio Mensual"
-              value={formatCurrency(averageCost)}
+              value={formatCurrencyCompact(averageCost)}
               subtitle="Por suscripción"
-              color="#34C759"
+              color={theme.colors.success}
             />
-            <View style={styles.statsSpacer} />
+            <View style={commonStyles.spacer} />
             <StatsCard
               title="Categoría Principal"
               value={mostExpensiveCategory ? mostExpensiveCategory[0] : 'N/A'}
-              subtitle={mostExpensiveCategory ? formatCurrency(mostExpensiveCategory[1]) : ''}
-              color="#FF9500"
+              subtitle={mostExpensiveCategory ? formatCurrencyCompact(mostExpensiveCategory[1]) : ''}
+              color={theme.colors.warning}
             />
           </View>
 
           <View style={styles.statsRow}>
             <StatsCard
               title="Gasto Anual"
-              value={formatCurrency(stats.totalAnnual)}
+              value={formatCurrencyCompact(stats.totalAnnual)}
               subtitle="Proyección total"
-              color="#007AFF"
+              color={theme.colors.primary}
             />
-            <View style={styles.statsSpacer} />
+            <View style={commonStyles.spacer} />
             <StatsCard
               title="Ahorro Potencial"
-              value={formatCurrency(stats.totalMonthly * 0.15)}
+              value={formatCurrencyCompact(stats.totalMonthly * 0.15)}
               subtitle="15% optimización"
-              color="#5856D6"
+              color={theme.colors.secondary}
             />
           </View>
         </View>
 
-
-        
         {/* Enhanced Monthly Spending by Category */}
         {barChartData.labels.length > 0 && (
           <BarChartComponent
@@ -186,8 +165,8 @@ export default function AnalyticsScreen() {
           insights={[
             {
               title: "Proyección Anual",
-              description: `Basado en tus suscripciones actuales, gastarás ${formatCurrency(stats.totalAnnual)} este año`,
-              metricValue: formatCurrency(stats.totalAnnual / 12),
+              description: `Basado en tus suscripciones actuales, gastarás ${formatCurrencyCompact(stats.totalAnnual)} este año`,
+              metricValue: formatCurrencyCompact(stats.totalAnnual / 12),
               metricLabel: "promedio mensual",
               iconName: "chart.line.uptrend.xyaxis" as SFSymbol,
               iconBackground: "#E8F5E8"
@@ -195,15 +174,15 @@ export default function AnalyticsScreen() {
             ...(mostExpensiveCategory ? [{
               title: "Categoría Dominante",
               description: `${mostExpensiveCategory[0]} representa el ${Math.round((mostExpensiveCategory[1] / stats.totalMonthly) * 100)}% de tu presupuesto mensual`,
-              metricValue: formatCurrency(mostExpensiveCategory[1]),
+              metricValue: formatCurrencyCompact(mostExpensiveCategory[1]),
               metricLabel: "gasto mensual",
               iconName: "chart.pie" as SFSymbol,
               iconBackground: "#FFF4E6"
             }] : []),
             {
               title: "Optimización Sugerida",
-              description: `Podrías ahorrar hasta ${formatCurrency(stats.totalMonthly * 0.15)} al mes revisando suscripciones poco utilizadas`,
-              metricValue: formatCurrency(stats.totalMonthly * 0.15 * 12),
+              description: `Podrías ahorrar hasta ${formatCurrencyCompact(stats.totalMonthly * 0.15)} al mes revisando suscripciones poco utilizadas`,
+              metricValue: formatCurrencyCompact(stats.totalMonthly * 0.15 * 12),
               metricLabel: "ahorro anual potencial",
               iconName: "target" as SFSymbol,
               iconBackground: "#E6F3FF"
@@ -217,79 +196,20 @@ export default function AnalyticsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  title: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 32,
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: '#8E8E93',
-    lineHeight: 22,
-  },
   statsGrid: {
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing['2xl'],
   },
   statsRow: {
     flexDirection: 'row',
-    marginBottom: 12,
-  },
-  statsSpacer: {
-    width: 12,
-  },
-  // These styles are still needed for the TrendChart section
-  chartSection: {
-    paddingHorizontal: 20,
-    marginBottom: 32,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 22,
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  sectionSubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
-    lineHeight: 20,
-  },
-  sectionIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#F8F9FA',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: theme.spacing.md,
   },
   emptyState: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 40,
+    paddingVertical: theme.spacing['4xl'],
+    paddingHorizontal: theme.spacing['3xl'],
   },
   emptyIconContainer: {
     width: 120,
@@ -298,19 +218,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F8FF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
+    marginBottom: theme.spacing['2xl'],
   },
   emptyTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 24,
-    color: '#1C1C1E',
-    marginBottom: 12,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize['3xl'],
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.md,
     textAlign: 'center',
   },
   emptySubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
     lineHeight: 24,
     maxWidth: 280,

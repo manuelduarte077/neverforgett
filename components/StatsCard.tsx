@@ -9,51 +9,40 @@ interface StatsCardProps {
   color?: string;
 }
 
-export function StatsCard({ title, value, subtitle, color = theme.colors.primary }: StatsCardProps) {
+export const StatsCard = ({ title, value, subtitle, color = theme.colors.primary }: StatsCardProps) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-
+    <View style={[styles.card, { borderLeftColor: color }]}>
+      <Text style={styles.title}>{title}</Text>
       <Text style={[styles.value, { color }]}>{value}</Text>
-
-      {subtitle && (
-        <Text style={styles.subtitle}>{subtitle}</Text>
-      )}
+      {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.lg,
-    ...theme.shadows.sm,
+  card: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing.sm,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    borderLeftWidth: 4,
+    ...theme.shadows.sm,
   },
   title: {
     fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.fontSize.base,
+    fontSize: theme.typography.fontSize.sm,
     color: theme.colors.text.secondary,
-    textTransform: 'uppercase' as const,
-    letterSpacing: 0.5,
+    marginBottom: theme.spacing.xs,
   },
   value: {
     fontFamily: theme.typography.fontFamily.bold,
-    fontSize: theme.typography.fontSize['3xl'],
+    fontSize: theme.typography.fontSize['2xl'],
+    color: theme.colors.text.primary,
     marginBottom: theme.spacing.xs,
   },
   subtitle: {
     fontFamily: theme.typography.fontFamily.regular,
-    fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.text.secondary,
+    fontSize: theme.typography.fontSize.xs,
+    color: theme.colors.text.tertiary,
   },
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { SymbolView, SFSymbol } from 'expo-symbols';
+import { theme } from '@/styles/theme';
 
 interface BarChartComponentProps {
   data: {
@@ -73,25 +74,25 @@ export const BarChartComponent = ({ data, title, subtitle }: BarChartComponentPr
 
 const styles = StyleSheet.create({
   chartSection: {
-    paddingHorizontal: 20,
-    marginBottom: 32,
+    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing['3xl'],
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 20,
+    marginBottom: theme.spacing.xl,
   },
   sectionTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 22,
-    color: '#1C1C1E',
-    marginBottom: 4,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize['2xl'],
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.xs,
   },
   sectionSubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
     lineHeight: 20,
   },
   sectionIcon: {
@@ -103,39 +104,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chartContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 8,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.xl,
+    ...theme.shadows.md,
     alignItems: 'center',
   },
-  // New styles for gifted-charts
   barLabel: {
-    color: '#1C1C1E',
-    fontSize: 10,
-    fontFamily: 'Inter-Regular',
+    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.xs,
+    fontFamily: theme.typography.fontFamily.regular,
     marginBottom: 6,
   },
   axisText: {
-    color: '#8E8E93',
-    fontSize: 10,
-    fontFamily: 'Inter-Regular',
+    color: theme.colors.text.secondary,
+    fontSize: theme.typography.fontSize.xs,
+    fontFamily: theme.typography.fontFamily.regular,
   },
   tooltip: {
-    backgroundColor: '#1C1C1E',
-    padding: 8,
-    borderRadius: 4,
+    backgroundColor: theme.colors.text.primary,
+    padding: theme.spacing.sm,
+    borderRadius: theme.borderRadius.xs,
   },
   tooltipText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontFamily: 'Inter-Regular',
+    color: theme.colors.surface,
+    fontSize: theme.typography.fontSize.sm,
+    fontFamily: theme.typography.fontFamily.regular,
   },
 });

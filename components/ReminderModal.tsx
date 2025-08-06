@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Switch, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SymbolView } from 'expo-symbols';
+import { theme } from '@/styles/theme';
 
 interface ReminderModalProps {
   visible: boolean;
@@ -65,7 +66,7 @@ export const ReminderModal = ({ visible, onClose, onSave, initialData }: Reminde
             <Switch
               value={enabled}
               onValueChange={setEnabled}
-              trackColor={{ false: '#E5E5E7', true: '#007AFF' }}
+              trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
             />
           </View>
 
@@ -135,89 +136,82 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   modalView: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    padding: theme.spacing.xl,
+    ...theme.shadows.md,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: theme.spacing.xl,
   },
   modalTitle: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 18,
-    color: '#1C1C1E',
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.text.primary,
   },
   closeButton: {
-    padding: 5,
+    padding: theme.spacing.xs,
   },
   optionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: theme.spacing.xl,
   },
   optionLabel: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 16,
-    color: '#1C1C1E',
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
   },
   daysSelector: {
     flexDirection: 'row',
   },
   dayOption: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.xs,
     borderRadius: 16,
-    backgroundColor: '#F2F2F7',
-    marginLeft: 8,
+    backgroundColor: theme.colors.background,
+    marginLeft: theme.spacing.sm,
   },
   dayOptionSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: theme.colors.primary,
   },
   dayOptionText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
   },
   dayOptionTextSelected: {
-    color: '#FFFFFF',
+    color: theme.colors.surface,
   },
   timeSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.sm,
   },
   timeText: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#1C1C1E',
-    marginRight: 8,
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
+    marginRight: theme.spacing.sm,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.lg,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: theme.spacing.xl,
   },
   saveButtonText: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#FFFFFF',
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.surface,
   },
 });
