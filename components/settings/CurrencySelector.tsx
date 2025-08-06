@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/styles/theme';
+import { useCurrencyStore } from '@/store/currencyStore';
 
 export interface Currency {
   code: string;
@@ -22,14 +23,13 @@ export const CURRENCIES: Currency[] = [
 interface CurrencySelectorProps {
   bottomSheetModalRef: React.RefObject<BottomSheetModal | null>;
   onSelect: (currency: Currency) => void;
-  selectedCurrency: Currency;
 }
 
 export const CurrencySelector = ({ 
   bottomSheetModalRef, 
-  onSelect, 
-  selectedCurrency 
+  onSelect
 }: CurrencySelectorProps) => {
+  const { selectedCurrency } = useCurrencyStore();
   // Variables
   const snapPoints = useMemo(() => ['50%', '75%'], []);
 

@@ -3,41 +3,22 @@ import { Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
+import { useCurrencyStore } from '@/store/currencyStore';
 import { NotificationService } from '@/services/NotificationService';
-import { CURRENCIES, Currency } from '@/components/settings/CurrencySelector';
 
 export const useSettings = () => {
   const { subscriptions } = useSubscriptionStore();
+  const { selectedCurrency, setCurrency } = useCurrencyStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(CURRENCIES[0]!);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  useEffect(() => {
-    loadSavedCurrency();
-  }, []);
-
-  const loadSavedCurrency = async () => {
-    try {
-      const savedCurrencyCode = await AsyncStorage.getItem('selectedCurrency');
-      if (savedCurrencyCode) {
-        const currency = CURRENCIES.find(c => c.code === savedCurrencyCode);
-        if (currency) {
-          setSelectedCurrency(currency);
-        }
-      }
-    } catch (error) {
-      console.log('Error loading saved currency:', error);
-    }
-  };
 
   const handleCurrencySettings = () => {
     bottomSheetModalRef.current?.present();
   };
 
-  const handleCurrencySelect = async (currency: Currency) => {
+  const handleCurrencySelect = async (currency: any) => {
     try {
-      setSelectedCurrency(currency);
-      await AsyncStorage.setItem('selectedCurrency', currency.code);
+      await setCurrency(currency);
       Alert.alert(
         'Moneda Actualizada',
         `La moneda se ha cambiado a ${currency.name} (${currency.symbol})`,

@@ -117,7 +117,6 @@ export default function SettingsScreen() {
       <CurrencySelector
         bottomSheetModalRef={bottomSheetModalRef}
         onSelect={handleCurrencySelect}
-        selectedCurrency={selectedCurrency}
       />
     </SafeAreaView>
   </BottomSheetModalProvider>

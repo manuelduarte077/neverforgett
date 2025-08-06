@@ -7,6 +7,7 @@ import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } f
 import * as SplashScreen from 'expo-splash-screen';
 import { initQuickActions } from '@/services/quickActionsService';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { CurrencyProvider } from '@/components/CurrencyProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,26 +50,28 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="add"
-          options={{
-            presentation: 'modal',
-            headerShown: true, title: 'Agregar Suscripción',
-          }} />
-        <Stack.Screen name="settings"
-          options={{
-            presentation: 'modal',
-            headerShown: true, title: 'Configuración',
-          }} />
-        <Stack.Screen name="edit-subscription/[id]"
-          options={{
-            presentation: 'modal',
-            headerShown: true, title: 'Editar Suscripción',
-          }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <CurrencyProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="add"
+            options={{
+              presentation: 'modal',
+              headerShown: true, title: 'Agregar Suscripción',
+            }} />
+          <Stack.Screen name="settings"
+            options={{
+              presentation: 'modal',
+              headerShown: true, title: 'Configuración',
+            }} />
+          <Stack.Screen name="edit-subscription/[id]"
+            options={{
+              presentation: 'modal',
+              headerShown: true, title: 'Editar Suscripción',
+            }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </CurrencyProvider>
     </GestureHandlerRootView>
   );
 }
