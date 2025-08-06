@@ -106,7 +106,7 @@ export default function SettingsScreen() {
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Never Forgett v1.0.1
+            Never Forgett v1.0.2
           </Text>
           <Text style={styles.footerSubtext}>
             Desarrollado con ❤️ para ayudarte a gestionar tus suscripciones

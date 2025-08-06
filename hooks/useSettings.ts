@@ -126,7 +126,7 @@ export const useSettings = () => {
   const handleAbout = () => {
     Alert.alert(
       'Acerca de la App',
-      'Never Forgett v1.0.1\n\nUna aplicación para gestionar tus suscripciones personales y hacer seguimiento de tus gastos.',
+      'Never Forgett v1.0.2\n\nUna aplicación para gestionar tus suscripciones personales y hacer seguimiento de tus gastos.',
       [{ text: 'OK' }]
     );
   };
