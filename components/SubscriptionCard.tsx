@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SymbolView } from 'expo-symbols';
+import { router } from 'expo-router';
 import { Subscription } from '@/types/subscription';
 import { CATEGORY_COLORS } from '@/types/subscription';
 import { theme } from '@/styles/theme';
@@ -9,9 +10,10 @@ import { useCurrency } from '@/hooks/useCurrency';
 interface SubscriptionCardProps {
   subscription: Subscription;
   onMorePress?: () => void;
+  onEditPress?: () => void;
 }
 
-export const SubscriptionCard = ({ subscription, onMorePress }: SubscriptionCardProps) => {
+export const SubscriptionCard = ({ subscription, onMorePress, onEditPress }: SubscriptionCardProps) => {
   const { formatCurrencyCompact } = useCurrency();
   
   const getDaysUntilRenewal = () => {
@@ -78,11 +80,18 @@ export const SubscriptionCard = ({ subscription, onMorePress }: SubscriptionCard
           </View>
         </View>
 
-        {onMorePress && (
-          <TouchableOpacity style={styles.moreButton} onPress={onMorePress}>
-            <SymbolView name="ellipsis" type="hierarchical" />
-          </TouchableOpacity>
-        )}
+        <View style={styles.actionButtons}>
+          {onEditPress && (
+            <TouchableOpacity style={styles.actionButton} onPress={onEditPress}>
+              <SymbolView name="pencil" type="hierarchical" />
+            </TouchableOpacity>
+          )}
+          {onMorePress && (
+            <TouchableOpacity style={styles.actionButton} onPress={onMorePress}>
+              <SymbolView name="ellipsis" type="hierarchical" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {subscription.notes && (
@@ -164,8 +173,13 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.xs,
     color: theme.colors.surface,
   },
-  moreButton: {
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
     padding: theme.spacing.xs,
+    marginLeft: theme.spacing.sm,
   },
   notesContainer: {
     marginTop: theme.spacing.md,

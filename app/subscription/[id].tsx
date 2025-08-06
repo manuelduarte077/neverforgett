@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
-import { ReminderModal } from '@/components/ReminderModal';
+import { ReminderBottomSheet } from '@/components/ReminderBottomSheet';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useDate } from '@/hooks/useDate';
 import { commonStyles } from '@/styles/common';
@@ -15,10 +16,14 @@ export default function SubscriptionDetailScreen() {
   const { subscriptions, updateSubscription, deleteSubscription, setSubscriptionReminder } = useSubscriptionStore();
   const { formatCurrency } = useCurrency();
   const { formatDate } = useDate();
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   
   const [subscription, setSubscription] = useState(subscriptions.find(sub => sub.id === id));
-  const [showReminderModal, setShowReminderModal] = useState(false);
   const [isUpdatingReminder, setIsUpdatingReminder] = useState(false);
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
 
   useEffect(() => {
     const currentSub = subscriptions.find(sub => sub.id === id);
@@ -119,13 +124,14 @@ export default function SubscriptionDetailScreen() {
     : subscription.cost;
 
   return (
-    <SafeAreaView style={commonStyles.container} edges={['top']}>
-      <Stack.Screen
-        options={{
-          title: subscription.name,
-          headerBackTitle: 'Atrás',
-        }}
-      />
+    <BottomSheetModalProvider>
+      <SafeAreaView style={commonStyles.container} edges={['top']}>
+        <Stack.Screen
+          options={{
+            title: subscription.name,
+            headerBackTitle: 'Atrás',
+          }}
+        />
 
       <ScrollView style={commonStyles.scrollView}>
         {/* Header Section */}
@@ -195,7 +201,17 @@ export default function SubscriptionDetailScreen() {
           
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={() => setShowReminderModal(true)}
+            onPress={() => router.push(`/edit-subscription/${subscription.id}`)}
+          >
+            <SymbolView name="pencil" type="hierarchical" />
+            <Text style={styles.actionButtonText}>
+              Editar Suscripción
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handlePresentModalPress}
             disabled={isUpdatingReminder}
           >
             <SymbolView name="bell" type="hierarchical" />
@@ -217,13 +233,13 @@ export default function SubscriptionDetailScreen() {
         </View>
       </ScrollView>
 
-      <ReminderModal
-        visible={showReminderModal}
-        onClose={() => setShowReminderModal(false)}
-        onSave={handleSaveReminder}
-        initialData={getReminderInitialData()}
-      />
-    </SafeAreaView>
+        <ReminderBottomSheet
+          bottomSheetModalRef={bottomSheetModalRef}
+          onSave={handleSaveReminder}
+          initialData={getReminderInitialData()}
+        />
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   );
 }
 

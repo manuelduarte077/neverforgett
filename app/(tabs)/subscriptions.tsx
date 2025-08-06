@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
@@ -54,6 +55,10 @@ export default function SubscriptionsScreen() {
         },
       ]
     );
+  };
+
+  const handleEditSubscription = (id: string) => {
+    router.push(`/edit-subscription/${id}`);
   };
 
   const clearFilters = () => {
@@ -131,6 +136,7 @@ export default function SubscriptionsScreen() {
           <SubscriptionCard
             key={subscription.id}
             subscription={subscription}
+            onEditPress={() => handleEditSubscription(subscription.id)}
             onMorePress={() => handleDeleteSubscription(subscription.id, subscription.name)}
           />
         ))}
