@@ -10,10 +10,9 @@ import { useCurrency } from '@/hooks/useCurrency';
 interface SubscriptionCardProps {
   subscription: Subscription;
   onMorePress?: () => void;
-  onEditPress?: () => void;
 }
 
-export const SubscriptionCard = ({ subscription, onMorePress, onEditPress }: SubscriptionCardProps) => {
+export const SubscriptionCard = ({ subscription, onMorePress }: SubscriptionCardProps) => {
   const { formatCurrencyCompact } = useCurrency();
   
   const getDaysUntilRenewal = () => {
@@ -81,11 +80,12 @@ export const SubscriptionCard = ({ subscription, onMorePress, onEditPress }: Sub
         </View>
 
         <View style={styles.actionButtons}>
-          {onEditPress && (
-            <TouchableOpacity style={styles.actionButton} onPress={onEditPress}>
-              <SymbolView name="pencil" type="hierarchical" />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity 
+            style={styles.actionButton} 
+            onPress={() => router.push(`/edit-subscription/${subscription.id}`)}
+          >
+            <SymbolView name="pencil" type="hierarchical" />
+          </TouchableOpacity>
           {onMorePress && (
             <TouchableOpacity style={styles.actionButton} onPress={onMorePress}>
               <SymbolView name="ellipsis" type="hierarchical" />

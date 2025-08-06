@@ -1,10 +1,11 @@
 import React, { useRef, useCallback } from 'react';
-import { View, ScrollView, Platform, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, Platform, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEditSubscription } from '@/hooks/useEditSubscription';
+import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { FormField } from '@/components/forms/FormField';
 import { PickerField } from '@/components/forms/PickerField';
 import { OptionsContainer, Option } from '@/components/forms/OptionsContainer';
@@ -12,10 +13,15 @@ import { Button } from '@/components/ui/Button';
 import { ReminderBottomSheet } from '@/components/ReminderBottomSheet';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { theme } from '@/styles/theme';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useDate } from '@/hooks/useDate';
 
 export default function EditSubscriptionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const { deleteSubscription } = useSubscriptionStore();
+  const { formatCurrency } = useCurrency();
+  const { formatDate } = useDate();
   
   const {
     formData,
@@ -61,8 +67,10 @@ export default function EditSubscriptionScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            // Implementar eliminación
-            router.back();
+            if (subscription) {
+              await deleteSubscription(subscription.id);
+              router.back();
+            }
           }
         },
       ]
@@ -78,12 +86,37 @@ export default function EditSubscriptionScreen() {
       <SafeAreaView style={styles.container} edges={['top']}>
         <Stack.Screen
           options={{
-            title: 'Editar Suscripción',
+            title: subscription?.name || 'Suscripción',
             headerBackTitle: 'Atrás',
           }}
         />
 
         <ScrollView style={styles.scrollView}>
+          {/* Información de la Suscripción */}
+          <View style={styles.infoSection}>
+            <Text style={styles.infoTitle}>Información Actual</Text>
+            <View style={styles.infoCard}>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Servicio:</Text>
+                <Text style={styles.infoValue}>{subscription?.name}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Costo:</Text>
+                <Text style={styles.infoValue}>{formatCurrency(subscription?.cost || 0)}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Frecuencia:</Text>
+                <Text style={styles.infoValue}>
+                  {subscription?.frequency === 'monthly' ? 'Mensual' : 'Anual'}
+                </Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Próxima renovación:</Text>
+                <Text style={styles.infoValue}>{formatDate(subscription?.renewalDate || '')}</Text>
+              </View>
+            </View>
+          </View>
+
           <View style={styles.form}>
             <FormField
               label="Nombre del Servicio"
@@ -226,6 +259,38 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  infoSection: {
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
+  },
+  infoTitle: {
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.md,
+  },
+  infoCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing.lg,
+    ...theme.shadows.sm,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: theme.spacing.sm,
+  },
+  infoLabel: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
+  },
+  infoValue: {
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
   },
   form: {
     paddingHorizontal: theme.spacing.xl,

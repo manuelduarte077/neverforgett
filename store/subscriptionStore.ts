@@ -50,7 +50,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       const newSubscription: Subscription = {
         ...subscriptionData,
         id: Date.now().toString(),
-        color: CATEGORY_COLORS[subscriptionData.category] || CATEGORY_COLORS.Otros,
+        color: CATEGORY_COLORS[subscriptionData.category] ?? CATEGORY_COLORS.Otros ?? '#C44569',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -109,16 +109,14 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       );
 
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
-      set({ subscriptions: updatedSubscriptions, loading: false });
+      set({ subscriptions: updatedSubscriptions as Subscription[], loading: false });
       
-      // Programar la notificación si hay un recordatorio
       if (reminderToSave && reminderToSave.enabled) {
         const subscription = updatedSubscriptions.find(sub => sub.id === id);
         if (subscription) {
-          await NotificationService.scheduleSubscriptionReminder(subscription);
+          await NotificationService.scheduleSubscriptionReminder(subscription as Subscription);
         }
       } else {
-        // Si se desactivó el recordatorio, cancelar las notificaciones
         await NotificationService.cancelSubscriptionReminders(id);
       }
       

@@ -61,11 +61,6 @@ export default function RootLayout() {
             presentation: 'modal',
             headerShown: true, title: 'Configuración',
           }} />
-        <Stack.Screen name="subscription/[id]"
-          options={{
-            presentation: 'modal',
-            headerShown: true, title: 'Suscripción',
-          }} />
         <Stack.Screen name="edit-subscription/[id]"
           options={{
             presentation: 'modal',

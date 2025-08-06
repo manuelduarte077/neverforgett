@@ -15,7 +15,7 @@ export const commonStyles = StyleSheet.create({
   },
   title: {
     fontFamily: theme.typography.fontFamily.bold,
-    fontSize: theme.typography.fontSize['4xl'],
+    fontSize: theme.typography.fontSize['3xl'],
     color: theme.colors.text.primary,
     marginBottom: theme.spacing.xs,
   },

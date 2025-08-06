@@ -45,14 +45,13 @@ export default function DashboardScreen() {
         <View style={commonStyles.header}>
           <View style={commonStyles.row}>
             <View style={{ flex: 1 }}>
-              <Text style={commonStyles.title}>Dashboard</Text>
-              <Text style={commonStyles.subtitle}>
-                Resumen de tus suscripciones
-              </Text>
+              <Text style={commonStyles.title}>Never Forgett</Text>
             </View>
             <TouchableOpacity
               onPress={() => router.push('/settings')}>
-              <SymbolView name="gear" type="hierarchical" />
+              <SymbolView name="gear" type="hierarchical"
+                style={{ width: 28, height: 28 }}
+               />
             </TouchableOpacity>
           </View>
         </View>
