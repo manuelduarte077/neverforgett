@@ -10,9 +10,10 @@ import { useCurrency } from '@/hooks/useCurrency';
 interface SubscriptionCardProps {
   subscription: Subscription;
   onMorePress?: () => void;
+  showEditButton?: boolean;
 }
 
-export const SubscriptionCard = ({ subscription, onMorePress }: SubscriptionCardProps) => {
+export const SubscriptionCard = ({ subscription, onMorePress, showEditButton = true }: SubscriptionCardProps) => {
   const { formatCurrencyCompact } = useCurrency();
   
   const getDaysUntilRenewal = () => {
@@ -65,31 +66,48 @@ export const SubscriptionCard = ({ subscription, onMorePress }: SubscriptionCard
         </View>
       </View>
 
-      <View style={styles.cardFooter}>
-        <View style={styles.renewalInfo}>
-          <SymbolView name="calendar" type="hierarchical" />
-          <Text style={styles.renewalDate}>
-            {formatRenewalDate(subscription.renewalDate)}
-          </Text>
-        </View>
-
-        <View style={styles.statusContainer}>
-          <View style={[styles.statusBadge, { backgroundColor: renewalStatus.color }]}>
-            <Text style={styles.statusText}>{renewalStatus.text}</Text>
+              <View style={styles.cardFooter}>
+          <View style={styles.renewalInfo}>
+            <SymbolView name="calendar" type="hierarchical" />
+            <Text style={styles.renewalDate}>
+              {formatRenewalDate(subscription.renewalDate)}
+            </Text>
           </View>
-        </View>
 
-        <View style={styles.actionButtons}>
-          <TouchableOpacity 
-            style={styles.actionButton} 
-            onPress={() => router.push(`/edit-subscription/${subscription.id}`)}
-          >
-            <SymbolView name="pencil" type="hierarchical" />
-          </TouchableOpacity>
-          {onMorePress && (
-            <TouchableOpacity style={styles.actionButton} onPress={onMorePress}>
-              <SymbolView name="ellipsis" type="hierarchical" />
-            </TouchableOpacity>
+          {showEditButton && (
+            <View style={styles.statusContainer}>
+              <View style={[styles.statusBadge, { backgroundColor: renewalStatus.color }]}>
+                <Text style={styles.statusText}>{renewalStatus.text}</Text>
+              </View>
+            </View>
+          )}
+
+          <View style={styles.actionButtons}>
+          {showEditButton ? (
+            <>
+              <TouchableOpacity 
+                style={styles.actionButton} 
+                onPress={() => router.push(`/edit-subscription/${subscription.id}`)}
+              >
+                <SymbolView name="pencil" type="hierarchical" />
+              </TouchableOpacity>
+              {onMorePress && (
+                <TouchableOpacity style={styles.actionButton} onPress={onMorePress}>
+                  <SymbolView name="ellipsis" type="hierarchical" />
+                </TouchableOpacity>
+              )}
+            </>
+          ) : (
+            <>
+              <View style={[styles.statusBadge, { backgroundColor: renewalStatus.color }]}>
+                <Text style={styles.statusText}>{renewalStatus.text}</Text>
+              </View>
+              {onMorePress && (
+                <TouchableOpacity style={styles.actionButton} onPress={onMorePress}>
+                  <SymbolView name="ellipsis" type="hierarchical" />
+                </TouchableOpacity>
+              )}
+            </>
           )}
         </View>
       </View>

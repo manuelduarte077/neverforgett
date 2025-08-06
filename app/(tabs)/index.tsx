@@ -102,6 +102,7 @@ export default function DashboardScreen() {
                 <SubscriptionCard
                   key={subscription.id}
                   subscription={subscription}
+                  showEditButton={false}
                 />
               ))}
             </View>
@@ -123,6 +124,7 @@ export default function DashboardScreen() {
                   <SubscriptionCard
                     key={subscription.id}
                     subscription={subscription}
+                    showEditButton={false}
                   />
                 ))}
             </View>
