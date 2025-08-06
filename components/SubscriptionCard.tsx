@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
 import { Subscription } from '@/types/subscription';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useDate } from '@/hooks/useDate';
+import { theme } from '@/styles/theme';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -12,6 +15,9 @@ interface SubscriptionCardProps {
 }
 
 export function SubscriptionCard({ subscription, onPress, onMorePress, onReminderPress }: SubscriptionCardProps) {
+  const { formatCurrency } = useCurrency();
+  const { formatDateShort, getDaysUntilRenewal } = useDate();
+
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -19,30 +25,8 @@ export function SubscriptionCard({ subscription, onPress, onMorePress, onReminde
       router.push(`/subscription/${subscription.id}`);
     }
   };
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      day: 'numeric',
-      month: 'short',
-    });
-  };
-
-  const getDaysUntilRenewal = () => {
-    const renewalDate = new Date(subscription.renewalDate);
-    const today = new Date();
-    const diffTime = renewalDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
-  const daysUntilRenewal = getDaysUntilRenewal();
+  const daysUntilRenewal = getDaysUntilRenewal(subscription.renewalDate);
   const isUpcoming = daysUntilRenewal <= 7 && daysUntilRenewal >= 0;
 
   return (
@@ -59,7 +43,7 @@ export function SubscriptionCard({ subscription, onPress, onMorePress, onReminde
           <View style={styles.actionButtons}>
             {subscription.reminder?.enabled && (
               <TouchableOpacity onPress={onReminderPress} style={styles.reminderButton}>
-                <SymbolView name="bell.fill" type="hierarchical" colors="#007AFF" />
+                <SymbolView name="bell.fill" type="hierarchical" colors={theme.colors.primary} />
               </TouchableOpacity>
             )}
             <TouchableOpacity onPress={onMorePress} style={styles.moreButton}>
@@ -81,10 +65,10 @@ export function SubscriptionCard({ subscription, onPress, onMorePress, onReminde
 
           <View style={styles.renewalSection}>
             <SymbolView name="calendar"
-              colors={isUpcoming ? '#FF9500' : '#8E8E93'}
+              colors={isUpcoming ? theme.colors.warning : theme.colors.text.secondary}
               type="hierarchical" />
             <Text style={[styles.renewalDate, isUpcoming && styles.upcomingRenewal]}>
-              {formatDate(subscription.renewalDate)}
+              {formatDateShort(subscription.renewalDate)}
             </Text>
             {isUpcoming && (
               <Text style={styles.daysLeft}>
@@ -100,17 +84,10 @@ export function SubscriptionCard({ subscription, onPress, onMorePress, onReminde
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    marginBottom: theme.spacing.md,
+    ...theme.shadows.sm,
     flexDirection: 'row',
     overflow: 'hidden',
   },
@@ -119,38 +96,38 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: theme.spacing.lg,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: theme.spacing.md,
   },
   titleSection: {
     flex: 1,
   },
   name: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#1C1C1E',
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
     marginBottom: 2,
   },
   category: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
   },
   actionButtons: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   reminderButton: {
-    padding: 4,
-    marginRight: 8,
+    padding: theme.spacing.xs,
+    marginRight: theme.spacing.sm,
   },
   moreButton: {
-    padding: 4,
+    padding: theme.spacing.xs,
   },
   details: {
     flexDirection: 'row',
@@ -162,33 +139,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cost: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
-    color: '#34C759',
-    marginLeft: 4,
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.success,
+    marginLeft: theme.spacing.xs,
   },
   frequency: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
   },
   renewalSection: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   renewalDate: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    color: '#8E8E93',
-    marginLeft: 4,
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
+    marginLeft: theme.spacing.xs,
   },
   upcomingRenewal: {
-    color: '#FF9500',
+    color: theme.colors.warning,
   },
   daysLeft: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 10,
-    color: '#FF9500',
-    marginLeft: 4,
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.xs,
+    color: theme.colors.warning,
+    marginLeft: theme.spacing.xs,
   },
 });

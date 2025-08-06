@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { theme } from '@/styles/theme';
 
 interface StatsCardProps {
   title: string;
@@ -8,7 +9,7 @@ interface StatsCardProps {
   color?: string;
 }
 
-export function StatsCard({ title, value, subtitle, color = '#007AFF' }: StatsCardProps) {
+export function StatsCard({ title, value, subtitle, color = theme.colors.primary }: StatsCardProps) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -26,40 +27,33 @@ export function StatsCard({ title, value, subtitle, color = '#007AFF' }: StatsCa
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.lg,
+    ...theme.shadows.sm,
     flex: 1,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: theme.spacing.sm,
   },
   title: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    color: '#8E8E93',
-    textTransform: 'uppercase',
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
+    textTransform: 'uppercase' as const,
     letterSpacing: 0.5,
   },
   value: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 24,
-    marginBottom: 4,
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.fontSize['3xl'],
+    marginBottom: theme.spacing.xs,
   },
   subtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 12,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.text.secondary,
   },
 });
