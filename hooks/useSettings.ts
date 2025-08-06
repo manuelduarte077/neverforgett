@@ -1,63 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { NotificationService } from '@/services/NotificationService';
-import { DataExportService } from '@/services/dataExportService';
+import { CURRENCIES, Currency } from '@/components/settings/CurrencySelector';
 
 export const useSettings = () => {
-  const { subscriptions, addSubscription } = useSubscriptionStore();
-  const [isExporting, setIsExporting] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
+  const { subscriptions } = useSubscriptionStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(CURRENCIES[0]!);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const handleExportData = async () => {
+  useEffect(() => {
+    loadSavedCurrency();
+  }, []);
+
+  const loadSavedCurrency = async () => {
     try {
-      setIsExporting(true);
-      await DataExportService.exportData(subscriptions);
+      const savedCurrencyCode = await AsyncStorage.getItem('selectedCurrency');
+      if (savedCurrencyCode) {
+        const currency = CURRENCIES.find(c => c.code === savedCurrencyCode);
+        if (currency) {
+          setSelectedCurrency(currency);
+        }
+      }
     } catch (error) {
-      Alert.alert('Error', error instanceof Error ? error.message : 'No se pudieron exportar los datos.');
-    } finally {
-      setIsExporting(false);
+      console.log('Error loading saved currency:', error);
     }
   };
 
-  const handleImportData = async () => {
-    try {
-      setIsImporting(true);
-      const importedData = await DataExportService.importData();
-      
-      if (!importedData) return;
+  const handleCurrencySettings = () => {
+    bottomSheetModalRef.current?.present();
+  };
 
+  const handleCurrencySelect = async (currency: Currency) => {
+    try {
+      setSelectedCurrency(currency);
+      await AsyncStorage.setItem('selectedCurrency', currency.code);
       Alert.alert(
-        'Confirmar Importación',
-        `Se importarán ${importedData.length} suscripciones. ¿Deseas continuar?`,
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          { 
-            text: 'Importar', 
-            onPress: async () => {
-              try {
-                for (const subscriptionData of importedData) {
-                  await addSubscription(subscriptionData);
-                }
-                
-                Alert.alert(
-                  'Importación Exitosa',
-                  `Se han importado ${importedData.length} suscripciones correctamente.`,
-                  [{ text: 'OK' }]
-                );
-              } catch (error) {
-                Alert.alert('Error', 'No se pudieron importar algunas suscripciones.');
-              }
-            } 
-          }
-        ]
+        'Moneda Actualizada',
+        `La moneda se ha cambiado a ${currency.name} (${currency.symbol})`,
+        [{ text: 'OK' }]
       );
     } catch (error) {
-      Alert.alert('Error', error instanceof Error ? error.message : 'No se pudieron importar los datos.');
-    } finally {
-      setIsImporting(false);
+      Alert.alert('Error', 'No se pudo guardar la configuración de moneda.');
     }
   };
 
@@ -158,17 +145,17 @@ export const useSettings = () => {
   const handleAbout = () => {
     Alert.alert(
       'Acerca de la App',
-      'Subscription Manager v1.0\n\nUna aplicación para gestionar tus suscripciones personales y hacer seguimiento de tus gastos.',
+      'Never Forgett v1.0.1\n\nUna aplicación para gestionar tus suscripciones personales y hacer seguimiento de tus gastos.',
       [{ text: 'OK' }]
     );
   };
 
   return {
-    isExporting,
-    isImporting,
     isLoading,
-    handleExportData,
-    handleImportData,
+    selectedCurrency,
+    bottomSheetModalRef,
+    handleCurrencySettings,
+    handleCurrencySelect,
     handleClearAllData,
     handleNotificationSettings,
     handleAbout,

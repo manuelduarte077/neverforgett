@@ -1,9 +1,11 @@
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { SymbolView } from 'expo-symbols';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SettingItem } from '@/components/settings/SettingItem';
 import { StatsSummary } from '@/components/settings/StatsSummary';
+import { CurrencySelector } from '@/components/settings/CurrencySelector';
 import { useSettings } from '@/hooks/useSettings';
 import { commonStyles } from '@/styles/common';
 import { theme } from '@/styles/theme';
@@ -11,19 +13,20 @@ import { theme } from '@/styles/theme';
 export default function SettingsScreen() {
   const { subscriptions } = useSubscriptionStore();
   const {
-    isExporting,
-    isImporting,
     isLoading,
-    handleExportData,
-    handleImportData,
+    selectedCurrency,
+    bottomSheetModalRef,
+    handleCurrencySettings,
+    handleCurrencySelect,
     handleClearAllData,
     handleNotificationSettings,
     handleAbout,
   } = useSettings();
 
   return (
-    <SafeAreaView style={commonStyles.container} edges={['top']}>
-      <ScrollView style={commonStyles.scrollView}>
+    <BottomSheetModalProvider>
+      <SafeAreaView style={commonStyles.container} edges={['top']}>
+        <ScrollView style={commonStyles.scrollView}>
         <View style={commonStyles.header}>
           <Text style={commonStyles.title}>Configuración</Text>
           <Text style={commonStyles.subtitle}>
@@ -42,41 +45,18 @@ export default function SettingsScreen() {
           <Text style={commonStyles.sectionTitle}>Notificaciones</Text>
           <View style={commonStyles.card}>
             <SettingItem
-              icon={isLoading ? 
-                <ActivityIndicator size="small" color={theme.colors.primary} /> : 
+              icon={isLoading ?
+                <ActivityIndicator size="small" color={theme.colors.primary} /> :
                 <SymbolView name="bell" type="hierarchical" />}
-              title={isLoading ? "Configurando..." : "Recordatorios"}
-              subtitle="Configurar notificaciones de renovación"
+              title={isLoading ? "Configurando..." : "Recordatorios de Renovación"}
+              subtitle="Configurar alertas para próximos pagos"
               onPress={handleNotificationSettings}
               disabled={isLoading}
             />
           </View>
         </View>
 
-        {/* Data Management */}
-        <View style={commonStyles.section}>
-          <Text style={commonStyles.sectionTitle}>Gestión de Datos</Text>
-          <View style={commonStyles.card}>
-            <SettingItem
-              icon={isExporting ? 
-                <ActivityIndicator size="small" color={theme.colors.primary} /> : 
-                <SymbolView name="arrow.down.circle" type="hierarchical" />}
-              title={isExporting ? "Exportando..." : "Exportar Datos"}
-              subtitle="Guardar tus suscripciones en un archivo"
-              onPress={handleExportData}
-              disabled={isExporting}
-            />
-            <SettingItem
-              icon={isImporting ? 
-                <ActivityIndicator size="small" color={theme.colors.primary} /> : 
-                <SymbolView name="arrow.up.circle" type="hierarchical" />}
-              title={isImporting ? "Importando..." : "Importar Datos"}
-              subtitle="Cargar suscripciones desde un archivo"
-              onPress={handleImportData}
-              disabled={isImporting}
-            />
-          </View>
-        </View>
+
 
         {/* Danger Zone */}
         <View style={commonStyles.section}>
@@ -92,6 +72,19 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Currency */}
+        <View style={commonStyles.section}>
+          <Text style={commonStyles.sectionTitle}>Moneda</Text>
+          <View style={commonStyles.card}>
+            <SettingItem
+              icon={<SymbolView name="dollarsign" type="hierarchical" />}
+              title="Seleccionar Moneda"
+              subtitle={`${selectedCurrency.name} (${selectedCurrency.symbol})`}
+              onPress={handleCurrencySettings}
+            />
+          </View>
+        </View>
+
         {/* About */}
         <View style={commonStyles.section}>
           <Text style={commonStyles.sectionTitle}>Información</Text>
@@ -102,19 +95,32 @@ export default function SettingsScreen() {
               subtitle="Versión e información del desarrollador"
               onPress={handleAbout}
             />
+            <SettingItem
+              icon={<SymbolView name="questionmark.circle" type="hierarchical" />}
+              title="Ayuda y Soporte"
+              subtitle="Guías y contacto de soporte"
+              onPress={() => { }}
+            />
           </View>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Subscription Manager v1.0
+            Never Forgett v1.0.1
           </Text>
           <Text style={styles.footerSubtext}>
             Desarrollado con ❤️ para ayudarte a gestionar tus suscripciones
           </Text>
         </View>
       </ScrollView>
+
+      <CurrencySelector
+        bottomSheetModalRef={bottomSheetModalRef}
+        onSelect={handleCurrencySelect}
+        selectedCurrency={selectedCurrency}
+      />
     </SafeAreaView>
+  </BottomSheetModalProvider>
   );
 }
 
@@ -125,17 +131,19 @@ const styles = StyleSheet.create({
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginTop: theme.spacing.xl,
+    marginBottom: theme.spacing.xl,
   },
   footerText: {
-    fontFamily: theme.typography.fontFamily.medium,
+    fontFamily: theme.typography.fontFamily.semiBold,
     fontSize: theme.typography.fontSize.base,
-    color: theme.colors.text.secondary,
-    marginBottom: theme.spacing.xs,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.sm,
   },
   footerSubtext: {
     fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.text.tertiary,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
+    lineHeight: 18,
   },
 });
