@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
@@ -68,7 +68,7 @@ export default function AnalyticsScreen() {
       {
         data: Object.values(stats.categoryBreakdown),
         colors: Object.keys(stats.categoryBreakdown).map(cat =>
-          () => CATEGORY_COLORS[cat] || CATEGORY_COLORS.Otros
+          () => CATEGORY_COLORS[cat] ?? CATEGORY_COLORS.Otros ?? '#C44569'
         ),
       },
     ],

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, ScrollView, RefreshControl, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
@@ -7,6 +7,9 @@ import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useCurrency } from '@/hooks/useCurrency';
+import { commonStyles } from '@/styles/common';
+import { theme } from '@/styles/theme';
 
 export default function DashboardScreen() {
   const {
@@ -17,6 +20,8 @@ export default function DashboardScreen() {
     getUpcomingRenewals
   } = useSubscriptionStore();
 
+  const { formatCurrency } = useCurrency();
+
   useEffect(() => {
     loadSubscriptions();
   }, []);
@@ -24,42 +29,32 @@ export default function DashboardScreen() {
   const stats = getStats();
   const upcomingRenewals = getUpcomingRenewals(7);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
-
   const onRefresh = () => {
     loadSubscriptions();
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={commonStyles.container} edges={['top']}>
       <StatusBar style="dark" />
       <ScrollView
-        style={styles.scrollView}
+        style={commonStyles.scrollView}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }
       >
-        <View style={styles.header}>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-            <Text style={styles.title}>Dashboard</Text>
+        <View style={commonStyles.header}>
+          <View style={commonStyles.row}>
+            <View style={{ flex: 1 }}>
+              <Text style={commonStyles.title}>Dashboard</Text>
+              <Text style={commonStyles.subtitle}>
+                Resumen de tus suscripciones
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={() => router.push('/settings')}>
               <SymbolView name="gear" type="hierarchical" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.subtitle}>
-            Resumen de tus suscripciones
-          </Text>
         </View>
 
         <View style={styles.statsGrid}>
@@ -68,14 +63,14 @@ export default function DashboardScreen() {
               title="Gasto Mensual"
               value={formatCurrency(stats.totalMonthly)}
               subtitle="Total por mes"
-              color="#34C759"
+              color={theme.colors.success}
             />
-            <View style={styles.statsSpacer} />
+            <View style={commonStyles.spacer} />
             <StatsCard
               title="Gasto Anual"
               value={formatCurrency(stats.totalAnnual)}
               subtitle="Total por año"
-              color="#007AFF"
+              color={theme.colors.primary}
             />
           </View>
 
@@ -84,21 +79,21 @@ export default function DashboardScreen() {
               title="Suscripciones"
               value={stats.activeSubscriptions.toString()}
               subtitle="Activas"
-              color="#FF9500"
+              color={theme.colors.warning}
             />
-            <View style={styles.statsSpacer} />
+            <View style={commonStyles.spacer} />
             <StatsCard
               title="Próximos Pagos"
               value={upcomingRenewals.length.toString()}
               subtitle="En 7 días"
-              color="#FF3B30"
+              color={theme.colors.danger}
             />
           </View>
         </View>
 
         {upcomingRenewals.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Próximos Pagos</Text>
+          <View style={commonStyles.section}>
+            <Text style={commonStyles.sectionTitle}>Próximos Pagos</Text>
             <Text style={styles.sectionSubtitle}>
               Renovaciones en los próximos 7 días
             </Text>
@@ -115,8 +110,8 @@ export default function DashboardScreen() {
         )}
 
         {subscriptions.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Suscripciones Recientes</Text>
+          <View style={commonStyles.section}>
+            <Text style={commonStyles.sectionTitle}>Suscripciones Recientes</Text>
             <Text style={styles.sectionSubtitle}>
               Últimas suscripciones agregadas
             </Text>
@@ -148,89 +143,55 @@ export default function DashboardScreen() {
       <TouchableOpacity style={styles.floatingButton}
         onPress={() => router.push('/add')}>
         <SymbolView name="plus"
-          tintColor="#FFFFFF"
+          tintColor={theme.colors.surface}
           type="hierarchical" />
       </TouchableOpacity>
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  header: {
-    padding: 20,
-    paddingBottom: 16,
-  },
-  title: {
-    fontFamily: 'Inter-Bold',
-    fontSize: 32,
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 16,
-    color: '#8E8E93',
-  },
   statsGrid: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
+    paddingHorizontal: theme.spacing.xl,
+    marginBottom: theme.spacing['2xl'],
   },
   statsRow: {
     flexDirection: 'row',
-    marginBottom: 12,
-  },
-  statsSpacer: {
-    width: 12,
-  },
-  section: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 20,
-    color: '#1C1C1E',
-    marginBottom: 4,
+    marginBottom: theme.spacing.md,
   },
   sectionSubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
-    marginBottom: 16,
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
+    marginBottom: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.xl,
   },
   subscriptionsList: {
-    marginTop: 8,
+    marginTop: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.xl,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 48,
-    paddingHorizontal: 20,
+    paddingVertical: theme.spacing['4xl'],
+    paddingHorizontal: theme.spacing.xl,
   },
   emptyTitle: {
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 18,
-    color: '#1C1C1E',
-    marginTop: 16,
-    marginBottom: 8,
+    fontFamily: theme.typography.fontFamily.semiBold,
+    fontSize: theme.typography.fontSize.xl,
+    color: theme.colors.text.primary,
+    marginTop: theme.spacing.lg,
+    marginBottom: theme.spacing.sm,
   },
   emptySubtitle: {
-    fontFamily: 'Inter-Regular',
-    fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
     lineHeight: 20,
   },
   floatingButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: theme.colors.primary,
     width: 55,
     height: 55,
     borderRadius: 15,
@@ -240,7 +201,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 30,
     elevation: 5,
-    shadowColor: "#000",
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
