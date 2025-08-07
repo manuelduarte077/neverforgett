@@ -3,6 +3,8 @@ import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { Subscription } from '@/types/subscription';
 import { toast } from '@/services/ToastService';
 
+import { SFSymbol } from 'expo-symbols';
+
 interface FormData {
   name: string;
   cost: string;
@@ -10,6 +12,7 @@ interface FormData {
   renewalDate: Date;
   category: string;
   notes: string;
+  icon: SFSymbol;
 }
 
 export const useEditSubscription = (subscriptionId: string) => {
@@ -21,6 +24,7 @@ export const useEditSubscription = (subscriptionId: string) => {
     renewalDate: new Date(),
     category: '',
     notes: '',
+    icon: 'creditcard' as SFSymbol,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
@@ -36,6 +40,7 @@ export const useEditSubscription = (subscriptionId: string) => {
         renewalDate: new Date(subscription.renewalDate),
         category: subscription.category,
         notes: subscription.notes || '',
+        icon: subscription.icon || 'creditcard',
       });
     }
   }, [subscription]);

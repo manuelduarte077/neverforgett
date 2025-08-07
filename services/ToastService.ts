@@ -43,8 +43,6 @@ class ToastService {
   private show(options: ToastOptions): void {
     const { message, title, type = 'info' } = options;
     
-    // For now, we'll use Alert.alert as a fallback
-    // In a real app, you might want to use a proper toast library
     const alertTitle = title || this.getDefaultTitle(type);
     
     Alert.alert(alertTitle, message, [{ text: 'OK' }]);

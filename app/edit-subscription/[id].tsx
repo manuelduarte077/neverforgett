@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, ScrollView, Platform, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -17,6 +17,8 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useDate } from '@/hooks/useDate';
 import { DatePickerEvent } from '@/types/common';
 import { toast } from '@/services/ToastService';
+import { IconPicker } from '@/components/IconPicker';
+import { SymbolView } from 'expo-symbols';
 
 export default function EditSubscriptionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -39,6 +41,7 @@ export default function EditSubscriptionScreen() {
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = React.useState(false);
   const [showFrequencyPicker, setShowFrequencyPicker] = React.useState(false);
+  const [showIconPicker, setShowIconPicker] = React.useState(false);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -119,6 +122,21 @@ export default function EditSubscriptionScreen() {
               placeholder="ej. Netflix, Spotify..."
               error={errors.name}
             />
+
+            <View style={styles.iconPickerContainer}>
+              <Text style={styles.iconPickerLabel}>Icono de la Suscripción</Text>
+              <TouchableOpacity
+                style={styles.iconPickerButton}
+                onPress={() => setShowIconPicker(true)}
+              >
+                <SymbolView
+                  name={formData.icon}
+                  type="hierarchical"
+                  style={styles.selectedIcon}
+                />
+                <Text style={styles.iconPickerText}>Seleccionar Icono</Text>
+              </TouchableOpacity>
+            </View>
 
             <FormField
               label="Costo"
@@ -241,6 +259,13 @@ export default function EditSubscriptionScreen() {
           onSave={handleSaveReminder}
           initialData={getReminderInitialData()}
         />
+
+        <IconPicker
+          selectedIcon={formData.icon}
+          onIconSelect={(icon) => updateFormData('icon', icon)}
+          visible={showIconPicker}
+          onClose={() => setShowIconPicker(false)}
+        />
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -299,5 +324,34 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginTop: theme.spacing.md,
+  },
+  iconPickerContainer: {
+    marginBottom: theme.spacing.md,
+  },
+  iconPickerLabel: {
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.sm,
+  },
+  iconPickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  selectedIcon: {
+    width: 24,
+    height: 24,
+    marginRight: theme.spacing.md,
+  },
+  iconPickerText: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
   },
 }); 

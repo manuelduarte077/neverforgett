@@ -1,4 +1,4 @@
-import { View, ScrollView, Platform, StyleSheet } from 'react-native';
+import { View, ScrollView, Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAddSubscription } from '@/hooks/useAddSubscription';
 import { FormField } from '@/components/forms/FormField';
@@ -7,6 +7,8 @@ import { OptionsContainer, Option } from '@/components/forms/OptionsContainer';
 import { Button } from '@/components/ui/Button';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { theme } from '@/styles/theme';
+import { IconPicker } from '@/components/IconPicker';
+import { SymbolView } from 'expo-symbols';
 
 export default function AddSubscriptionScreen() {
   const {
@@ -16,6 +18,7 @@ export default function AddSubscriptionScreen() {
     showDatePicker,
     showCategoryPicker,
     showFrequencyPicker,
+    showIconPicker,
     handleSubmit,
     handleDateChange,
     updateFormData,
@@ -23,6 +26,7 @@ export default function AddSubscriptionScreen() {
     setShowDatePicker,
     setShowCategoryPicker,
     setShowFrequencyPicker,
+    setShowIconPicker,
   } = useAddSubscription();
 
   return (
@@ -35,6 +39,21 @@ export default function AddSubscriptionScreen() {
           placeholder="ej. Netflix, Spotify..."
           error={errors.name}
         />
+
+        <View style={styles.iconPickerContainer}>
+          <Text style={styles.iconPickerLabel}>Icono de la Suscripción</Text>
+          <TouchableOpacity
+            style={styles.iconPickerButton}
+            onPress={() => setShowIconPicker(true)}
+          >
+            <SymbolView
+              name={formData.icon}
+              type="hierarchical"
+              style={styles.selectedIcon}
+            />
+            <Text style={styles.iconPickerText}>Seleccionar Icono</Text>
+          </TouchableOpacity>
+        </View>
 
         <FormField
           label="Costo"
@@ -132,6 +151,13 @@ export default function AddSubscriptionScreen() {
           size="large"
         />
       </View>
+
+      <IconPicker
+        selectedIcon={formData.icon}
+        onIconSelect={(icon) => updateFormData('icon', icon)}
+        visible={showIconPicker}
+        onClose={() => setShowIconPicker(false)}
+      />
     </ScrollView>
   );
 }
@@ -147,5 +173,34 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: theme.spacing.xl,
     paddingBottom: theme.spacing['3xl'],
+  },
+  iconPickerContainer: {
+    marginBottom: theme.spacing.md,
+  },
+  iconPickerLabel: {
+    fontFamily: theme.typography.fontFamily.medium,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.sm,
+  },
+  iconPickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  selectedIcon: {
+    width: 24,
+    height: 24,
+    marginRight: theme.spacing.md,
+  },
+  iconPickerText: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.base,
+    color: theme.colors.text.primary,
   },
 });

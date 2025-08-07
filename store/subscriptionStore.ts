@@ -53,6 +53,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
         ...subscriptionData,
         id: Date.now().toString(),
         color: CATEGORY_COLORS[subscriptionData.category] ?? CATEGORY_COLORS.Otros ?? '#C44569',
+        icon: subscriptionData.icon || 'creditcard',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
