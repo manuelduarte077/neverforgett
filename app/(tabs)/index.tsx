@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { View, ScrollView, RefreshControl, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
+import { View, ScrollView, RefreshControl, TouchableOpacity, Text, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { StatsCard } from '@/components/StatsCard';
@@ -21,9 +21,21 @@ export default function DashboardScreen() {
   } = useSubscriptionStore();
 
   const { formatCurrency } = useCurrency();
+  
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     loadSubscriptions();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, []);
 
   const stats = getStats();
@@ -31,6 +43,39 @@ export default function DashboardScreen() {
 
   const onRefresh = () => {
     loadSubscriptions();
+  };
+
+  const handleScrollBeginDrag = () => {
+    setIsScrolling(true);
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleScrollEndDrag = () => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }, 150);
+  };
+
+  const handleMomentumScrollEnd = () => {
+    setIsScrolling(false);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
@@ -41,6 +86,10 @@ export default function DashboardScreen() {
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }
+        onScrollBeginDrag={handleScrollBeginDrag}
+        onScrollEndDrag={handleScrollEndDrag}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
+        scrollEventThrottle={16}
       >
         <View style={commonStyles.header}>
           <View style={commonStyles.row}>
@@ -171,12 +220,15 @@ export default function DashboardScreen() {
         )}
       </ScrollView>
       {subscriptions.length > 0 && (
-        <TouchableOpacity style={styles.floatingButton}
-          onPress={() => router.push('/add')}>
-          <SymbolView name="plus"
-            tintColor={theme.colors.surface}
-            type="hierarchical" />
-        </TouchableOpacity>
+        <Animated.View style={[styles.floatingButton, { opacity: fadeAnim }]}>
+          <TouchableOpacity
+            style={styles.floatingButtonInner}
+            onPress={() => router.push('/add')}>
+            <SymbolView name="plus"
+              tintColor={theme.colors.surface}
+              type="hierarchical" />
+          </TouchableOpacity>
+        </Animated.View>
       )}
     </SafeAreaView>
   );
@@ -223,15 +275,17 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   floatingButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+  },
+  floatingButtonInner: {
     backgroundColor: theme.colors.primary,
     width: 55,
     height: 55,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    bottom: 30,
-    right: 30,
     elevation: 5,
     shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 2 },
