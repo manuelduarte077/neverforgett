@@ -39,7 +39,20 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const stored = await AsyncStorage.getItem(STORAGE_KEYS.SUBSCRIPTIONS);
-      const subscriptions = stored ? JSON.parse(stored) : [];
+      let subscriptions = stored ? JSON.parse(stored) : [];
+      
+      // Migrar suscripciones existentes para agregar el campo icon
+      const migratedSubscriptions = subscriptions.map((sub: any) => ({
+        ...sub,
+        icon: sub.icon || 'creditcard'
+      }));
+      
+      // Si hubo cambios, guardar las suscripciones migradas
+      if (JSON.stringify(subscriptions) !== JSON.stringify(migratedSubscriptions)) {
+        await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(migratedSubscriptions));
+        subscriptions = migratedSubscriptions;
+      }
+      
       set({ subscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al cargar suscripciones', loading: false });

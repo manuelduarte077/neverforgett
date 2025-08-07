@@ -28,6 +28,7 @@ export const useEditSubscription = (subscriptionId: string) => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
 
   const subscription = subscriptions.find(sub => sub.id === subscriptionId);
 
@@ -89,6 +90,7 @@ export const useEditSubscription = (subscriptionId: string) => {
         frequency: formData.frequency,
         renewalDate: formData.renewalDate.toISOString(),
         category: formData.category,
+        icon: formData.icon,
         ...(formData.notes.trim() ? { notes: formData.notes.trim() } : {}),
       };
 
@@ -151,9 +153,11 @@ export const useEditSubscription = (subscriptionId: string) => {
     errors,
     loading,
     subscription,
+    showIconPicker,
     updateFormData,
     handleSubmit,
     handleSaveReminder,
     getReminderInitialData,
+    setShowIconPicker,
   };
 }; 

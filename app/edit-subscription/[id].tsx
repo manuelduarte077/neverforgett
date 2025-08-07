@@ -32,16 +32,17 @@ export default function EditSubscriptionScreen() {
     errors,
     loading,
     subscription,
+    showIconPicker,
     updateFormData,
     handleSubmit,
     handleSaveReminder,
     getReminderInitialData,
+    setShowIconPicker,
   } = useEditSubscription(id as string);
 
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = React.useState(false);
   const [showFrequencyPicker, setShowFrequencyPicker] = React.useState(false);
-  const [showIconPicker, setShowIconPicker] = React.useState(false);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();

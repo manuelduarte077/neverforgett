@@ -54,9 +54,11 @@ export const SubscriptionCard = ({ subscription, onMorePress, showEditButton = t
         <View style={styles.serviceInfo}>
           <View style={styles.serviceHeader}>
             <SymbolView
-              name={subscription.icon}
+              name={subscription.icon || 'creditcard'}
               type="hierarchical"
               style={styles.serviceIcon}
+              tintColor={theme.colors.text.primary}
+              fallback={<Text style={styles.serviceIcon}>💳</Text>}
             />
             <Text style={styles.serviceName}>{subscription.name}</Text>
           </View>
@@ -73,7 +75,6 @@ export const SubscriptionCard = ({ subscription, onMorePress, showEditButton = t
 
               <View style={styles.cardFooter}>
           <View style={styles.renewalInfo}>
-            <SymbolView name="calendar" type="hierarchical" />
             <Text style={styles.renewalDate}>
               {formatRenewalDate(subscription.renewalDate)}
             </Text>
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: theme.spacing.sm,
+    color: theme.colors.text.primary,
   },
   serviceName: {
     fontFamily: theme.typography.fontFamily.semiBold,
