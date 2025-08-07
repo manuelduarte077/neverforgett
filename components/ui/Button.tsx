@@ -52,20 +52,31 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.borderRadius.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   primary: {
     backgroundColor: theme.colors.primary,
+    shadowColor: theme.colors.primary,
+    shadowOpacity: 0.3,
   },
   secondary: {
-    backgroundColor: 'transparent',
+    backgroundColor: theme.colors.surface,
     borderWidth: 1,
-    borderColor: theme.colors.primary,
+    borderColor: theme.colors.border,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
   },
   danger: {
     backgroundColor: theme.colors.danger,
+    shadowColor: theme.colors.danger,
+    shadowOpacity: 0.3,
   },
   small: {
     paddingVertical: theme.spacing.sm,
@@ -76,11 +87,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.xl,
   },
   large: {
-    paddingVertical: theme.spacing.lg,
+    paddingVertical: theme.spacing.xl,
     paddingHorizontal: theme.spacing.xl,
+    minHeight: 56,
   },
   disabled: {
-    opacity: 0.6,
+    opacity: 0.5,
+    shadowOpacity: 0,
   },
   text: {
     fontFamily: theme.typography.fontFamily.semiBold,
@@ -89,7 +102,7 @@ const styles = StyleSheet.create({
     color: theme.colors.surface,
   },
   secondaryText: {
-    color: theme.colors.primary,
+    color: theme.colors.text.primary,
   },
   dangerText: {
     color: theme.colors.surface,
@@ -101,7 +114,8 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.lg,
   },
   largeText: {
-    fontSize: theme.typography.fontSize.xl,
+    fontSize: theme.typography.fontSize.lg,
+    fontFamily: theme.typography.fontFamily.semiBold,
   },
   disabledText: {
     opacity: 0.6,

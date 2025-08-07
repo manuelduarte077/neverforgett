@@ -320,12 +320,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: theme.spacing.xl,
     paddingBottom: theme.spacing['3xl'],
+    gap: theme.spacing.md,
   },
   reminderButton: {
-    marginTop: theme.spacing.md,
+    marginTop: 0,
   },
   deleteButton: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.lg,
+    paddingTop: theme.spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
   },
   nameIconRow: {
     flexDirection: 'row',
