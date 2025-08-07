@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subscription, SubscriptionStats, CATEGORY_COLORS } from '@/types/subscription';
 import { NotificationService } from '@/services/NotificationService';
+import { router } from 'expo-router';
 
 interface ReminderData {
   enabled: boolean;
@@ -135,6 +136,11 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
 
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
+      
+      // Si no quedan suscripciones, redirigir al home
+      if (updatedSubscriptions.length === 0) {
+        router.replace('/(tabs)');
+      }
     } catch (error) {
       set({ error: 'Error al eliminar suscripción', loading: false });
     }

@@ -29,28 +29,7 @@ export const useSettings = () => {
     }
   };
 
-  const handleClearAllData = () => {
-    Alert.alert(
-      'Borrar Todos los Datos',
-      '¿Estás seguro de que deseas eliminar todas las suscripciones? Esta acción no se puede deshacer.',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Borrar Todo',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await AsyncStorage.setItem('subscriptions', JSON.stringify([]));
-              useSubscriptionStore.getState().loadSubscriptions();
-              Alert.alert('Datos eliminados', 'Todas las suscripciones han sido eliminadas correctamente.');
-            } catch (error) {
-              Alert.alert('Error', 'No se pudieron eliminar los datos.');
-            }
-          }
-        },
-      ]
-    );
-  };
+
 
   const handleNotificationSettings = async () => {
     try {
@@ -137,7 +116,6 @@ export const useSettings = () => {
     bottomSheetModalRef,
     handleCurrencySettings,
     handleCurrencySelect,
-    handleClearAllData,
     handleNotificationSettings,
     handleAbout,
   };

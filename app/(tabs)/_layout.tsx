@@ -1,7 +1,10 @@
 import { Tabs } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
+import { useSubscriptionState } from '@/hooks/useSubscriptionState';
 
 export default function TabLayout() {
+  const { hasSubscriptions, loading } = useSubscriptionState();
+
   return (
     <Tabs
       screenOptions={{
@@ -14,6 +17,7 @@ export default function TabLayout() {
           paddingBottom: 8,
           paddingTop: 6,
           height: 88,
+          display: hasSubscriptions ? 'flex' : 'none',
         },
         tabBarLabelStyle: {
           fontSize: 10,
