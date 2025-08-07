@@ -1,4 +1,4 @@
-import { View, ScrollView, Platform, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Platform, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAddSubscription } from '@/hooks/useAddSubscription';
 import { FormField } from '@/components/forms/FormField';
@@ -32,16 +32,7 @@ export default function AddSubscriptionScreen() {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.form}>
-        <FormField
-          label="Nombre del Servicio"
-          value={formData.name}
-          onChangeText={(text) => updateFormData('name', text)}
-          placeholder="ej. Netflix, Spotify..."
-          error={errors.name}
-        />
-
-        <View style={styles.iconPickerContainer}>
-          <Text style={styles.iconPickerLabel}>Icono de la Suscripción</Text>
+        <View style={styles.nameIconRow}>
           <TouchableOpacity
             style={styles.iconPickerButton}
             onPress={() => setShowIconPicker(true)}
@@ -51,9 +42,19 @@ export default function AddSubscriptionScreen() {
               type="hierarchical"
               style={styles.selectedIcon}
             />
-            <Text style={styles.iconPickerText}>Seleccionar Icono</Text>
           </TouchableOpacity>
+          
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.nameInput}
+              value={formData.name}
+              onChangeText={(text) => updateFormData('name', text)}
+              placeholder="ej. Netflix, Spotify..."
+              placeholderTextColor={theme.colors.text.secondary}
+            />
+          </View>
         </View>
+        {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
         <FormField
           label="Costo"
@@ -174,33 +175,46 @@ const styles = StyleSheet.create({
     padding: theme.spacing.xl,
     paddingBottom: theme.spacing['3xl'],
   },
-  iconPickerContainer: {
-    marginBottom: theme.spacing.md,
-  },
-  iconPickerLabel: {
-    fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.fontSize.base,
-    color: theme.colors.text.primary,
-    marginBottom: theme.spacing.sm,
-  },
-  iconPickerButton: {
+  nameIconRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.sm,
+  },
+  inputWrapper: {
+    flex: 1,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
     borderWidth: 1,
     borderColor: theme.colors.border,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+  },
+  nameInput: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
+    height: 20,
+  },
+  iconPickerButton: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedIcon: {
     width: 24,
     height: 24,
-    marginRight: theme.spacing.md,
   },
-  iconPickerText: {
+  errorText: {
     fontFamily: theme.typography.fontFamily.regular,
-    fontSize: theme.typography.fontSize.base,
-    color: theme.colors.text.primary,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.danger,
+    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing.md,
   },
 });
