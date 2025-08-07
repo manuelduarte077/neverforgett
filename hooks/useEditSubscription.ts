@@ -3,6 +3,8 @@ import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { Subscription } from '@/types/subscription';
 import { toast } from '@/services/ToastService';
 
+import { SFSymbol } from 'expo-symbols';
+
 interface FormData {
   name: string;
   cost: string;
@@ -10,6 +12,7 @@ interface FormData {
   renewalDate: Date;
   category: string;
   notes: string;
+  icon: SFSymbol;
 }
 
 export const useEditSubscription = (subscriptionId: string) => {
@@ -21,9 +24,11 @@ export const useEditSubscription = (subscriptionId: string) => {
     renewalDate: new Date(),
     category: '',
     notes: '',
+    icon: 'creditcard' as SFSymbol,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
 
   const subscription = subscriptions.find(sub => sub.id === subscriptionId);
 
@@ -36,6 +41,7 @@ export const useEditSubscription = (subscriptionId: string) => {
         renewalDate: new Date(subscription.renewalDate),
         category: subscription.category,
         notes: subscription.notes || '',
+        icon: subscription.icon || 'creditcard',
       });
     }
   }, [subscription]);
@@ -84,6 +90,7 @@ export const useEditSubscription = (subscriptionId: string) => {
         frequency: formData.frequency,
         renewalDate: formData.renewalDate.toISOString(),
         category: formData.category,
+        icon: formData.icon,
         ...(formData.notes.trim() ? { notes: formData.notes.trim() } : {}),
       };
 
@@ -146,9 +153,11 @@ export const useEditSubscription = (subscriptionId: string) => {
     errors,
     loading,
     subscription,
+    showIconPicker,
     updateFormData,
     handleSubmit,
     handleSaveReminder,
     getReminderInitialData,
+    setShowIconPicker,
   };
 }; 

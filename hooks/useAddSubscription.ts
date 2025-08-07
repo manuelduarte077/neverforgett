@@ -4,6 +4,7 @@ import { CATEGORY_COLORS } from '@/types/subscription';
 import { useDate } from './useDate';
 import { DatePickerEvent } from '@/types/common';
 import { toast } from '@/services/ToastService';
+import { SFSymbol } from 'expo-symbols';
 
 interface FormData {
   name: string;
@@ -12,6 +13,7 @@ interface FormData {
   renewalDate: Date;
   category: string;
   notes: string;
+  icon: SFSymbol;
 }
 
 export const useAddSubscription = () => {
@@ -25,11 +27,13 @@ export const useAddSubscription = () => {
     renewalDate: new Date(),
     category: '',
     notes: '',
+    icon: 'creditcard' as SFSymbol,
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showFrequencyPicker, setShowFrequencyPicker] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
@@ -67,6 +71,7 @@ export const useAddSubscription = () => {
         category: formData.category,
         notes: formData.notes.trim(),
         color: CATEGORY_COLORS[formData.category] || CATEGORY_COLORS.Otros || '#000000',
+        icon: formData.icon,
       });
 
       setFormData({
@@ -76,6 +81,7 @@ export const useAddSubscription = () => {
         renewalDate: new Date(),
         category: '',
         notes: '',
+        icon: 'creditcard' as SFSymbol,
       });
 
       toast.success('La suscripción se ha agregado correctamente', 'Suscripción Agregada');
@@ -106,6 +112,7 @@ export const useAddSubscription = () => {
     showDatePicker,
     showCategoryPicker,
     showFrequencyPicker,
+    showIconPicker,
     handleSubmit,
     handleDateChange,
     updateFormData,
@@ -113,5 +120,6 @@ export const useAddSubscription = () => {
     setShowDatePicker,
     setShowCategoryPicker,
     setShowFrequencyPicker,
+    setShowIconPicker,
   };
 }; 
