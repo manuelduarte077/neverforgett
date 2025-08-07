@@ -1,3 +1,5 @@
+import { SFSymbol } from 'expo-symbols';
+
 export interface Subscription {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ export interface Subscription {
   category: string;
   notes?: string;
   color: string;
+  icon: SFSymbol;
   createdAt: string;
   updatedAt: string;
   reminder?: {

@@ -1,9 +1,9 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView, SFSymbol } from 'expo-symbols';
 import { theme } from '@/styles/theme';
 
 interface FormFieldProps {
-  label: string;
+  label?: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
@@ -27,11 +27,11 @@ export const FormField = ({
 }: FormFieldProps) => {
   return (
     <View style={styles.fieldContainer}>
-      <Text style={styles.label}>{label}</Text>
+      {label && <Text style={styles.label}>{label}</Text>}
       <View style={[styles.inputContainer, error && styles.inputError]}>
         {icon && (
           <SymbolView 
-            name={icon as any} 
+            name={icon as SFSymbol} 
             style={styles.icon} 
             type="hierarchical" 
           />

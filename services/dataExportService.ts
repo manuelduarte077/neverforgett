@@ -3,6 +3,24 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { Subscription } from '@/types/subscription';
 
+interface ImportedSubscription {
+  id?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  name: string;
+  cost: number;
+  frequency: 'monthly' | 'annual';
+  renewalDate: string;
+  category: string;
+  notes?: string;
+  color: string;
+  reminder?: {
+    enabled: boolean;
+    daysInAdvance: number;
+    time: string | Date;
+  };
+}
+
 export class DataExportService {
   static async exportData(subscriptions: Subscription[]) {
     if (subscriptions.length === 0) {
@@ -47,7 +65,7 @@ export class DataExportService {
       throw new Error('El formato del archivo no es válido');
     }
     
-    return importedData.map((sub: any) => {
+    return importedData.map((sub: ImportedSubscription) => {
       const { id, createdAt, updatedAt, ...subscriptionData } = sub;
       
       if (subscriptionData.reminder && subscriptionData.reminder.time) {

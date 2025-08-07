@@ -18,7 +18,6 @@ export default function SettingsScreen() {
     bottomSheetModalRef,
     handleCurrencySettings,
     handleCurrencySelect,
-    handleClearAllData,
     handleNotificationSettings,
     handleAbout,
   } = useSettings();
@@ -58,19 +57,7 @@ export default function SettingsScreen() {
 
 
 
-        {/* Danger Zone */}
-        <View style={commonStyles.section}>
-          <Text style={commonStyles.sectionTitle}>Zona de Peligro</Text>
-          <View style={commonStyles.card}>
-            <SettingItem
-              icon={<SymbolView name="trash" type="hierarchical" />}
-              title="Borrar Todos los Datos"
-              subtitle="Eliminar todas las suscripciones permanentemente"
-              onPress={handleClearAllData}
-              color={theme.colors.danger}
-            />
-          </View>
-        </View>
+
 
         {/* Currency */}
         <View style={commonStyles.section}>

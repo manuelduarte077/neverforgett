@@ -52,7 +52,16 @@ export const SubscriptionCard = ({ subscription, onMorePress, showEditButton = t
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.serviceInfo}>
-          <Text style={styles.serviceName}>{subscription.name}</Text>
+          <View style={styles.serviceHeader}>
+            <SymbolView
+              name={subscription.icon || 'creditcard'}
+              type="hierarchical"
+              style={styles.serviceIcon}
+              tintColor={theme.colors.text.primary}
+              fallback={<Text style={styles.serviceIcon}>💳</Text>}
+            />
+            <Text style={styles.serviceName}>{subscription.name}</Text>
+          </View>
           <Text style={styles.category}>{subscription.category}</Text>
         </View>
         
@@ -66,7 +75,6 @@ export const SubscriptionCard = ({ subscription, onMorePress, showEditButton = t
 
               <View style={styles.cardFooter}>
           <View style={styles.renewalInfo}>
-            <SymbolView name="calendar" type="hierarchical" />
             <Text style={styles.renewalDate}>
               {formatRenewalDate(subscription.renewalDate)}
             </Text>
@@ -136,11 +144,21 @@ const styles = StyleSheet.create({
   serviceInfo: {
     flex: 1,
   },
+  serviceHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.xs,
+  },
+  serviceIcon: {
+    width: 20,
+    height: 20,
+    marginRight: theme.spacing.sm,
+    color: theme.colors.text.primary,
+  },
   serviceName: {
     fontFamily: theme.typography.fontFamily.semiBold,
     fontSize: theme.typography.fontSize.lg,
     color: theme.colors.text.primary,
-    marginBottom: theme.spacing.xs,
   },
   category: {
     fontFamily: theme.typography.fontFamily.regular,
