@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SymbolView, SFSymbol } from 'expo-symbols';
 import { theme } from '@/styles/theme';

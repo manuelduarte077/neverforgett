@@ -1,9 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { router } from 'expo-router';
 import { Subscription } from '@/types/subscription';
-import { CATEGORY_COLORS } from '@/types/subscription';
 import { theme } from '@/styles/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 

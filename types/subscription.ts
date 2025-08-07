@@ -12,7 +12,7 @@ export interface Subscription {
   reminder?: {
     enabled: boolean;
     daysInAdvance: number;
-    time: string; // ISO string
+    time: string;
   };
 }
 

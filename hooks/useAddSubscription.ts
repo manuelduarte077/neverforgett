@@ -65,10 +65,9 @@ export const useAddSubscription = () => {
         renewalDate: formData.renewalDate.toISOString(),
         category: formData.category,
         notes: formData.notes.trim(),
-        color: CATEGORY_COLORS[formData.category] || CATEGORY_COLORS.Otros,
+        color: CATEGORY_COLORS[formData.category] || CATEGORY_COLORS.Otros || '#000000',
       });
 
-      // Reset form
       setFormData({
         name: '',
         cost: '',

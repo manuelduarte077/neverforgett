@@ -92,7 +92,6 @@ export default function EditSubscriptionScreen() {
         />
 
         <ScrollView style={styles.scrollView}>
-          {/* Información de la Suscripción */}
           <View style={styles.infoSection}>
             <Text style={styles.infoTitle}>Información Actual</Text>
             <View style={styles.infoCard}>

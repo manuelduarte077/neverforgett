@@ -13,8 +13,6 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { commonStyles } from '@/styles/common';
 import { theme } from '@/styles/theme';
 
-const screenWidth = Dimensions.get('window').width;
-
 export default function AnalyticsScreen() {
   const { subscriptions, loadSubscriptions, getStats } = useSubscriptionStore();
   const { formatCurrencyCompact } = useCurrency();

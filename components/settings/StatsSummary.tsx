@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '@/styles/theme';
 import { Subscription } from '@/types/subscription';

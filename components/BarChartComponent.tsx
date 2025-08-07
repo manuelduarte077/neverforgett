@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { SymbolView, SFSymbol } from 'expo-symbols';
@@ -19,14 +18,13 @@ interface BarChartComponentProps {
 export const BarChartComponent = ({ data, title, subtitle }: BarChartComponentProps) => {
   const screenWidth = Dimensions.get('window').width - 80;
   
-  // Convert data format from react-native-chart-kit to react-native-gifted-charts
   const barData = data.labels.map((label, index) => ({
-    value: data.datasets[0].data[index],
+    value: data.datasets[0]?.data[index] ?? 0,
     label: label,
-    frontColor: data.datasets[0].colors[index](),
+    frontColor: data.datasets[0]?.colors[index]?.() ?? '#000000',
     topLabelComponent: () => (
       <Text style={styles.barLabel}>
-        {data.datasets[0].data[index]}
+        {data.datasets[0]?.data[index] ?? 0}
       </Text>
     ),
   }));
@@ -124,7 +122,7 @@ const styles = StyleSheet.create({
   tooltip: {
     backgroundColor: theme.colors.text.primary,
     padding: theme.spacing.sm,
-    borderRadius: theme.borderRadius.xs,
+    borderRadius: theme.borderRadius.sm,
   },
   tooltipText: {
     color: theme.colors.surface,
