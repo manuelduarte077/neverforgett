@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView, SFSymbol } from 'expo-symbols';
 import { theme } from '@/styles/theme';
 
 interface PickerFieldProps {
@@ -30,7 +30,7 @@ export const PickerField = ({
       >
         {icon && (
           <SymbolView 
-            name={icon as any} 
+            name={icon as SFSymbol} 
             style={styles.icon} 
             type="hierarchical" 
           />

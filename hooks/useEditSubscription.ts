@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { Subscription } from '@/types/subscription';
+import { toast } from '@/services/ToastService';
+
+import { SFSymbol } from 'expo-symbols';
 
 interface FormData {
   name: string;
@@ -10,6 +12,7 @@ interface FormData {
   renewalDate: Date;
   category: string;
   notes: string;
+  icon: SFSymbol;
 }
 
 export const useEditSubscription = (subscriptionId: string) => {
@@ -21,9 +24,11 @@ export const useEditSubscription = (subscriptionId: string) => {
     renewalDate: new Date(),
     category: '',
     notes: '',
+    icon: 'creditcard' as SFSymbol,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
 
   const subscription = subscriptions.find(sub => sub.id === subscriptionId);
 
@@ -36,6 +41,7 @@ export const useEditSubscription = (subscriptionId: string) => {
         renewalDate: new Date(subscription.renewalDate),
         category: subscription.category,
         notes: subscription.notes || '',
+        icon: subscription.icon || 'creditcard',
       });
     }
   }, [subscription]);
@@ -84,24 +90,17 @@ export const useEditSubscription = (subscriptionId: string) => {
         frequency: formData.frequency,
         renewalDate: formData.renewalDate.toISOString(),
         category: formData.category,
-        notes: formData.notes.trim() || undefined,
+        icon: formData.icon,
+        ...(formData.notes.trim() ? { notes: formData.notes.trim() } : {}),
       };
 
       await updateSubscription(subscription.id, updatedSubscription);
       
-      Alert.alert(
-        'Éxito',
-        'Suscripción actualizada correctamente',
-        [{ text: 'OK' }]
-      );
+      toast.success('Suscripción actualizada correctamente', 'Éxito');
       
       return true;
     } catch (error) {
-      Alert.alert(
-        'Error',
-        'No se pudo actualizar la suscripción. Inténtalo de nuevo.',
-        [{ text: 'OK' }]
-      );
+      toast.error('No se pudo actualizar la suscripción. Inténtalo de nuevo.');
       return false;
     } finally {
       setLoading(false);
@@ -119,26 +118,17 @@ export const useEditSubscription = (subscriptionId: string) => {
       const success = await setSubscriptionReminder(subscription.id, reminderData);
       
       if (success) {
-        Alert.alert(
-          'Recordatorio Configurado',
+        toast.success(
           `Se ha configurado un recordatorio para ${subscription.name} ${reminderData.daysInAdvance} día(s) antes de la renovación.`,
-          [{ text: 'OK' }]
+          'Recordatorio Configurado'
         );
       } else {
-        Alert.alert(
-          'Error',
-          'No se pudo configurar el recordatorio. Verifica los permisos de notificación.',
-          [{ text: 'OK' }]
-        );
+        toast.error('No se pudo configurar el recordatorio. Verifica los permisos de notificación.');
       }
       
       return success;
     } catch (error) {
-      Alert.alert(
-        'Error',
-        'Ocurrió un error al configurar el recordatorio.',
-        [{ text: 'OK' }]
-      );
+      toast.error('Ocurrió un error al configurar el recordatorio.');
       return false;
     }
   };
@@ -163,9 +153,11 @@ export const useEditSubscription = (subscriptionId: string) => {
     errors,
     loading,
     subscription,
+    showIconPicker,
     updateFormData,
     handleSubmit,
     handleSaveReminder,
     getReminderInitialData,
+    setShowIconPicker,
   };
 }; 

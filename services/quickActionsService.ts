@@ -39,7 +39,6 @@ export const initQuickActions = async (): Promise<(() => void) | undefined> => {
   try {
     const isSupported = await QuickActions.isSupported();
     if (!isSupported) {
-      console.log('Quick actions are not supported on this device');
       return;
     }
 
@@ -70,23 +69,25 @@ export const initQuickActions = async (): Promise<(() => void) | undefined> => {
 export const handleQuickAction = (action: QuickActions.Action | null) => {
   if (!action) return;
 
-  if (action.params?.href && typeof action.params.href === 'string') {
-    const href = action.params.href as any;
-    router.push(href);
-    return;
-  }
+      if (action.params?.href && typeof action.params.href === 'string') {
+      const href = action.params.href as string;
+      router.push(href as any);
+      return;
+    }
 
-  switch (action.id) {
-    case 'add-subscription':
-      router.push('/add' as any);
-      break;
-    case 'view-subscriptions':
-      router.push('/(tabs)/subscriptions' as any);
-      break;
-    case 'view-analytics':
-      router.push('/(tabs)/analytics' as any);
-      break;
-    default:
-      console.log('Unknown quick action:', action);
-  }
+    switch (action.id) {
+      case 'add-subscription':
+        router.push('/add');
+        break;
+      case 'view-subscriptions':
+        router.push('/(tabs)/subscriptions');
+        break;
+      case 'view-analytics':
+        router.push('/(tabs)/analytics');
+        break;
+      default:
+        if (__DEV__) {
+          console.log('Unknown quick action:', action);
+        }
+    }
 };

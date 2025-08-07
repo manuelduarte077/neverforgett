@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subscription, SubscriptionStats, CATEGORY_COLORS } from '@/types/subscription';
 import { NotificationService } from '@/services/NotificationService';
+import { router } from 'expo-router';
+import { STORAGE_KEYS } from '@/constants/app';
 
 interface ReminderData {
   enabled: boolean;
@@ -26,7 +28,7 @@ interface SubscriptionStore {
   filterByCategory: (category: string) => Subscription[];
 }
 
-const STORAGE_KEY = 'subscriptions';
+
 
 export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
   subscriptions: [],
@@ -36,8 +38,21 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
   loadSubscriptions: async () => {
     set({ loading: true, error: null });
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      const subscriptions = stored ? JSON.parse(stored) : [];
+      const stored = await AsyncStorage.getItem(STORAGE_KEYS.SUBSCRIPTIONS);
+      let subscriptions = stored ? JSON.parse(stored) : [];
+      
+      // Migrar suscripciones existentes para agregar el campo icon
+      const migratedSubscriptions = subscriptions.map((sub: any) => ({
+        ...sub,
+        icon: sub.icon || 'creditcard'
+      }));
+      
+      // Si hubo cambios, guardar las suscripciones migradas
+      if (JSON.stringify(subscriptions) !== JSON.stringify(migratedSubscriptions)) {
+        await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(migratedSubscriptions));
+        subscriptions = migratedSubscriptions;
+      }
+      
       set({ subscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al cargar suscripciones', loading: false });
@@ -51,6 +66,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
         ...subscriptionData,
         id: Date.now().toString(),
         color: CATEGORY_COLORS[subscriptionData.category] ?? CATEGORY_COLORS.Otros ?? '#C44569',
+        icon: subscriptionData.icon || 'creditcard',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -58,7 +74,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       const { subscriptions } = get();
       const updatedSubscriptions = [...subscriptions, newSubscription];
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al agregar suscripción', loading: false });
@@ -75,7 +91,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
           : sub
       );
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al actualizar suscripción', loading: false });
@@ -108,7 +124,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
           : sub
       );
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions as Subscription[], loading: false });
       
       if (reminderToSave && reminderToSave.enabled) {
@@ -133,8 +149,13 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       const { subscriptions } = get();
       const updatedSubscriptions = subscriptions.filter(sub => sub.id !== id);
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
+      
+      // Si no quedan suscripciones, redirigir al home
+      if (updatedSubscriptions.length === 0) {
+        router.replace('/(tabs)');
+      }
     } catch (error) {
       set({ error: 'Error al eliminar suscripción', loading: false });
     }

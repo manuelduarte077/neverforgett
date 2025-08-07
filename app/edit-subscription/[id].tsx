@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, ScrollView, Platform, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, Platform, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -15,6 +15,10 @@ import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { theme } from '@/styles/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useDate } from '@/hooks/useDate';
+import { DatePickerEvent } from '@/types/common';
+import { toast } from '@/services/ToastService';
+import { IconPicker } from '@/components/IconPicker';
+import { SymbolView } from 'expo-symbols';
 
 export default function EditSubscriptionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,10 +32,12 @@ export default function EditSubscriptionScreen() {
     errors,
     loading,
     subscription,
+    showIconPicker,
     updateFormData,
     handleSubmit,
     handleSaveReminder,
     getReminderInitialData,
+    setShowIconPicker,
   } = useEditSubscription(id as string);
 
   const [showDatePicker, setShowDatePicker] = React.useState(false);
@@ -42,7 +48,7 @@ export default function EditSubscriptionScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
+  const handleDateChange = (event: DatePickerEvent, selectedDate?: Date) => {
     setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
       updateFormData('renewalDate', selectedDate);
@@ -58,22 +64,15 @@ export default function EditSubscriptionScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Eliminar Suscripción',
+    toast.confirm(
       `¿Estás seguro de que deseas eliminar "${subscription?.name}"? Esta acción no se puede deshacer.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            if (subscription) {
-              await deleteSubscription(subscription.id);
-              router.back();
-            }
-          }
-        },
-      ]
+      'Eliminar Suscripción',
+      async () => {
+        if (subscription) {
+          await deleteSubscription(subscription.id);
+          router.back();
+        }
+      }
     );
   };
 
@@ -117,13 +116,29 @@ export default function EditSubscriptionScreen() {
           </View>
 
           <View style={styles.form}>
-            <FormField
-              label="Nombre del Servicio"
-              value={formData.name}
-              onChangeText={(text) => updateFormData('name', text)}
-              placeholder="ej. Netflix, Spotify..."
-              error={errors.name}
-            />
+            <View style={styles.nameIconRow}>
+              <TouchableOpacity
+                style={styles.iconPickerButton}
+                onPress={() => setShowIconPicker(true)}
+              >
+                <SymbolView
+                  name={formData.icon}
+                  type="hierarchical"
+                  style={styles.selectedIcon}
+                />
+              </TouchableOpacity>
+              
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.nameInput}
+                  value={formData.name}
+                  onChangeText={(text) => updateFormData('name', text)}
+                  placeholder="ej. Netflix, Spotify..."
+                  placeholderTextColor={theme.colors.text.secondary}
+                />
+              </View>
+            </View>
+            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
             <FormField
               label="Costo"
@@ -246,6 +261,13 @@ export default function EditSubscriptionScreen() {
           onSave={handleSaveReminder}
           initialData={getReminderInitialData()}
         />
+
+        <IconPicker
+          selectedIcon={formData.icon}
+          onIconSelect={(icon) => updateFormData('icon', icon)}
+          visible={showIconPicker}
+          onClose={() => setShowIconPicker(false)}
+        />
       </SafeAreaView>
     </BottomSheetModalProvider>
   );
@@ -298,11 +320,57 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: theme.spacing.xl,
     paddingBottom: theme.spacing['3xl'],
+    gap: theme.spacing.md,
   },
   reminderButton: {
-    marginTop: theme.spacing.md,
+    marginTop: 0,
   },
   deleteButton: {
-    marginTop: theme.spacing.md,
+    marginTop: theme.spacing.lg,
+    paddingTop: theme.spacing.lg,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+  },
+  nameIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.sm,
+  },
+  inputWrapper: {
+    flex: 1,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+  },
+  nameInput: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
+    height: 20,
+  },
+  iconPickerButton: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedIcon: {
+    width: 24,
+    height: 24,
+  },
+  errorText: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.danger,
+    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing.md,
   },
 }); 

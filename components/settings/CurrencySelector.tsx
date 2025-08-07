@@ -4,21 +4,7 @@ import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/styles/theme';
 import { useCurrencyStore } from '@/store/currencyStore';
-
-export interface Currency {
-  code: string;
-  name: string;
-  symbol: string;
-  country: string;
-}
-
-export const CURRENCIES: Currency[] = [
-  { code: 'USD', name: 'Dólar Estadounidense', symbol: '$', country: 'Estados Unidos' },
-  { code: 'NIO', name: 'Córdoba Nicaragüense', symbol: 'C$', country: 'Nicaragua' },
-  { code: 'CRC', name: 'Colón Costarricense', symbol: '₡', country: 'Costa Rica' },
-  { code: 'HNL', name: 'Lempira Hondureño', symbol: 'L', country: 'Honduras' },
-  { code: 'GTQ', name: 'Quetzal Guatemalteco', symbol: 'Q', country: 'Guatemala' },
-];
+import { CURRENCIES, Currency } from '@/types/currency';
 
 interface CurrencySelectorProps {
   bottomSheetModalRef: React.RefObject<BottomSheetModal | null>;

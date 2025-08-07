@@ -1,4 +1,4 @@
-import { View, ScrollView, Platform, StyleSheet } from 'react-native';
+import { View, ScrollView, Platform, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAddSubscription } from '@/hooks/useAddSubscription';
 import { FormField } from '@/components/forms/FormField';
@@ -7,6 +7,8 @@ import { OptionsContainer, Option } from '@/components/forms/OptionsContainer';
 import { Button } from '@/components/ui/Button';
 import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { theme } from '@/styles/theme';
+import { IconPicker } from '@/components/IconPicker';
+import { SymbolView } from 'expo-symbols';
 
 export default function AddSubscriptionScreen() {
   const {
@@ -16,6 +18,7 @@ export default function AddSubscriptionScreen() {
     showDatePicker,
     showCategoryPicker,
     showFrequencyPicker,
+    showIconPicker,
     handleSubmit,
     handleDateChange,
     updateFormData,
@@ -23,18 +26,35 @@ export default function AddSubscriptionScreen() {
     setShowDatePicker,
     setShowCategoryPicker,
     setShowFrequencyPicker,
+    setShowIconPicker,
   } = useAddSubscription();
 
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.form}>
-        <FormField
-          label="Nombre del Servicio"
-          value={formData.name}
-          onChangeText={(text) => updateFormData('name', text)}
-          placeholder="ej. Netflix, Spotify..."
-          error={errors.name}
-        />
+        <View style={styles.nameIconRow}>
+          <TouchableOpacity
+            style={styles.iconPickerButton}
+            onPress={() => setShowIconPicker(true)}
+          >
+            <SymbolView
+              name={formData.icon}
+              type="hierarchical"
+              style={styles.selectedIcon}
+            />
+          </TouchableOpacity>
+          
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.nameInput}
+              value={formData.name}
+              onChangeText={(text) => updateFormData('name', text)}
+              placeholder="ej. Netflix, Spotify..."
+              placeholderTextColor={theme.colors.text.secondary}
+            />
+          </View>
+        </View>
+        {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
         <FormField
           label="Costo"
@@ -132,6 +152,13 @@ export default function AddSubscriptionScreen() {
           size="large"
         />
       </View>
+
+      <IconPicker
+        selectedIcon={formData.icon}
+        onIconSelect={(icon) => updateFormData('icon', icon)}
+        visible={showIconPicker}
+        onClose={() => setShowIconPicker(false)}
+      />
     </ScrollView>
   );
 }
@@ -147,5 +174,47 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: theme.spacing.xl,
     paddingBottom: theme.spacing['3xl'],
+  },
+  nameIconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.sm,
+  },
+  inputWrapper: {
+    flex: 1,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+  },
+  nameInput: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.lg,
+    color: theme.colors.text.primary,
+    height: 20,
+  },
+  iconPickerButton: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedIcon: {
+    width: 24,
+    height: 24,
+  },
+  errorText: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.fontSize.sm,
+    color: theme.colors.danger,
+    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing.md,
   },
 });

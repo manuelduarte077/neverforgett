@@ -27,7 +27,6 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
-  // Initialize quick actions
   useEffect(() => {
     let cleanupFn: (() => void) | undefined;
     
