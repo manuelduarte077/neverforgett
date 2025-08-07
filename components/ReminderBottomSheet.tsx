@@ -4,6 +4,7 @@ import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/styles/theme';
+import { DatePickerEvent } from '@/types/common';
 
 interface ReminderData {
   enabled: boolean;
@@ -48,7 +49,7 @@ export const ReminderBottomSheet = ({
     handleDismiss();
   }, [enabled, daysInAdvance, time, onSave, handleDismiss]);
 
-  const handleTimeChange = (event: any, selectedDate?: Date) => {
+  const handleTimeChange = (event: DatePickerEvent, selectedDate?: Date) => {
     setShowTimePicker(Platform.OS === 'ios');
     if (selectedDate) {
       setTime(selectedDate);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
@@ -8,6 +8,7 @@ import { SymbolView } from 'expo-symbols';
 import { StatusBar } from 'expo-status-bar';
 import { commonStyles } from '@/styles/common';
 import { theme } from '@/styles/theme';
+import { toast } from '@/services/ToastService';
 
 export default function SubscriptionsScreen() {
   const {
@@ -42,17 +43,10 @@ export default function SubscriptionsScreen() {
   };
 
   const handleDeleteSubscription = (id: string, name: string) => {
-    Alert.alert(
-      'Eliminar Suscripción',
+    toast.confirm(
       `¿Estás seguro de que deseas eliminar "${name}"?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => deleteSubscription(id)
-        },
-      ]
+      'Eliminar Suscripción',
+      () => deleteSubscription(id)
     );
   };
 

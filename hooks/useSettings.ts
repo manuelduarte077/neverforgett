@@ -5,6 +5,8 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { useCurrencyStore } from '@/store/currencyStore';
 import { NotificationService } from '@/services/NotificationService';
+import { Currency } from '@/types/currency';
+import { toast } from '@/services/ToastService';
 
 export const useSettings = () => {
   const { subscriptions } = useSubscriptionStore();
@@ -16,16 +18,15 @@ export const useSettings = () => {
     bottomSheetModalRef.current?.present();
   };
 
-  const handleCurrencySelect = async (currency: any) => {
+  const handleCurrencySelect = async (currency: Currency) => {
     try {
       await setCurrency(currency);
-      Alert.alert(
-        'Moneda Actualizada',
+      toast.success(
         `La moneda se ha cambiado a ${currency.name} (${currency.symbol})`,
-        [{ text: 'OK' }]
+        'Moneda Actualizada'
       );
     } catch (error) {
-      Alert.alert('Error', 'No se pudo guardar la configuración de moneda.');
+      toast.error('No se pudo guardar la configuración de moneda.');
     }
   };
 
@@ -36,7 +37,7 @@ export const useSettings = () => {
       const hasPermission = await NotificationService.requestPermissions();
       
       if (hasPermission) {
-        Alert.alert(
+        toast.showActions(
           'Configuración de Notificaciones',
           'Configura cuándo quieres recibir recordatorios de renovación',
           [
@@ -47,7 +48,7 @@ export const useSettings = () => {
           ]
         );
       } else {
-        Alert.alert(
+        toast.showActions(
           'Permisos Denegados',
           'No se han concedido permisos para enviar notificaciones. Por favor, actívalos en la configuración de tu dispositivo para recibir recordatorios.',
           [
@@ -62,7 +63,7 @@ export const useSettings = () => {
         );
       }
     } catch (error) {
-      Alert.alert('Error', 'Ha ocurrido un error al configurar las notificaciones.');
+      toast.error('Ha ocurrido un error al configurar las notificaciones.');
     }
   };
 
@@ -90,23 +91,21 @@ export const useSettings = () => {
         }
       }
       
-      Alert.alert(
-        'Notificaciones Configuradas',
+      toast.success(
         `Se han programado recordatorios ${days} día(s) antes de cada renovación para ${scheduledCount} suscripciones.`,
-        [{ text: 'OK' }]
+        'Notificaciones Configuradas'
       );
     } catch (error) {
-      Alert.alert('Error', 'No se pudieron configurar las notificaciones.');
+      toast.error('No se pudieron configurar las notificaciones.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleAbout = () => {
-    Alert.alert(
-      'Acerca de la App',
+    toast.info(
       'Never Forgett v1.0.2\n\nUna aplicación para gestionar tus suscripciones personales y hacer seguimiento de tus gastos.',
-      [{ text: 'OK' }]
+      'Acerca de la App'
     );
   };
 

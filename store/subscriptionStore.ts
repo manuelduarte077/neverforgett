@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Subscription, SubscriptionStats, CATEGORY_COLORS } from '@/types/subscription';
 import { NotificationService } from '@/services/NotificationService';
 import { router } from 'expo-router';
+import { STORAGE_KEYS } from '@/constants/app';
 
 interface ReminderData {
   enabled: boolean;
@@ -27,7 +28,7 @@ interface SubscriptionStore {
   filterByCategory: (category: string) => Subscription[];
 }
 
-const STORAGE_KEY = 'subscriptions';
+
 
 export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
   subscriptions: [],
@@ -37,7 +38,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
   loadSubscriptions: async () => {
     set({ loading: true, error: null });
     try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
+      const stored = await AsyncStorage.getItem(STORAGE_KEYS.SUBSCRIPTIONS);
       const subscriptions = stored ? JSON.parse(stored) : [];
       set({ subscriptions, loading: false });
     } catch (error) {
@@ -59,7 +60,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       const { subscriptions } = get();
       const updatedSubscriptions = [...subscriptions, newSubscription];
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al agregar suscripción', loading: false });
@@ -76,7 +77,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
           : sub
       );
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
     } catch (error) {
       set({ error: 'Error al actualizar suscripción', loading: false });
@@ -109,7 +110,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
           : sub
       );
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions as Subscription[], loading: false });
       
       if (reminderToSave && reminderToSave.enabled) {
@@ -134,7 +135,7 @@ export const useSubscriptionStore = create<SubscriptionStore>((set, get) => ({
       const { subscriptions } = get();
       const updatedSubscriptions = subscriptions.filter(sub => sub.id !== id);
 
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSubscriptions));
+      await AsyncStorage.setItem(STORAGE_KEYS.SUBSCRIPTIONS, JSON.stringify(updatedSubscriptions));
       set({ subscriptions: updatedSubscriptions, loading: false });
       
       // Si no quedan suscripciones, redirigir al home

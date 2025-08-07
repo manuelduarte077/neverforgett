@@ -1,5 +1,6 @@
 import * as QuickActions from 'expo-quick-actions';
 import { router } from 'expo-router';
+import { AppRoute } from '@/types/common';
 
 export type QuickActionType = 'add-subscription' | 'view-subscriptions' | 'view-analytics';
 
@@ -39,7 +40,7 @@ export const initQuickActions = async (): Promise<(() => void) | undefined> => {
   try {
     const isSupported = await QuickActions.isSupported();
     if (!isSupported) {
-      console.log('Quick actions are not supported on this device');
+      // Quick actions are not supported on this device
       return;
     }
 
@@ -70,23 +71,26 @@ export const initQuickActions = async (): Promise<(() => void) | undefined> => {
 export const handleQuickAction = (action: QuickActions.Action | null) => {
   if (!action) return;
 
-  if (action.params?.href && typeof action.params.href === 'string') {
-    const href = action.params.href as any;
-    router.push(href);
-    return;
-  }
+      if (action.params?.href && typeof action.params.href === 'string') {
+      const href = action.params.href as string;
+      router.push(href as any);
+      return;
+    }
 
-  switch (action.id) {
-    case 'add-subscription':
-      router.push('/add' as any);
-      break;
-    case 'view-subscriptions':
-      router.push('/(tabs)/subscriptions' as any);
-      break;
-    case 'view-analytics':
-      router.push('/(tabs)/analytics' as any);
-      break;
-    default:
-      console.log('Unknown quick action:', action);
-  }
+    switch (action.id) {
+      case 'add-subscription':
+        router.push('/add');
+        break;
+      case 'view-subscriptions':
+        router.push('/(tabs)/subscriptions');
+        break;
+      case 'view-analytics':
+        router.push('/(tabs)/analytics');
+        break;
+      default:
+        // Use a proper logging service in production
+        if (__DEV__) {
+          console.log('Unknown quick action:', action);
+        }
+    }
 };

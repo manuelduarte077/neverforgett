@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, Switch, Platform } fro
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/styles/theme';
+import { DatePickerEvent } from '@/types/common';
 
 interface ReminderModalProps {
   visible: boolean;
@@ -38,7 +39,7 @@ export const ReminderModal = ({ visible, onClose, onSave, initialData }: Reminde
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const handleTimeChange = (event: any, selectedDate?: Date) => {
+  const handleTimeChange = (event: DatePickerEvent, selectedDate?: Date) => {
     setShowTimePicker(Platform.OS === 'ios');
     if (selectedDate) {
       setTime(selectedDate);

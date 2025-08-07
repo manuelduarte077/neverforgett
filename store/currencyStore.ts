@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CURRENCIES, Currency } from '@/components/settings/CurrencySelector';
+import { CURRENCIES, Currency } from '@/types/currency';
 
 interface CurrencyState {
   selectedCurrency: Currency;

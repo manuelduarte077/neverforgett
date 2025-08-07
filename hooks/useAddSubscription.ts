@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
 import { useSubscriptionStore } from '@/store/subscriptionStore';
 import { CATEGORY_COLORS } from '@/types/subscription';
 import { useDate } from './useDate';
+import { DatePickerEvent } from '@/types/common';
+import { toast } from '@/services/ToastService';
 
 interface FormData {
   name: string;
@@ -77,24 +78,20 @@ export const useAddSubscription = () => {
         notes: '',
       });
 
-      Alert.alert(
-        'Suscripción Agregada',
-        'La suscripción se ha agregado correctamente',
-        [{ text: 'OK' }]
-      );
+      toast.success('La suscripción se ha agregado correctamente', 'Suscripción Agregada');
     } catch (error) {
-      Alert.alert('Error', 'No se pudo agregar la suscripción');
+      toast.error('No se pudo agregar la suscripción');
     }
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
+  const handleDateChange = (event: DatePickerEvent, selectedDate?: Date) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setFormData({ ...formData, renewalDate: selectedDate });
     }
   };
 
-  const updateFormData = (field: keyof FormData, value: any) => {
+  const updateFormData = (field: keyof FormData, value: string | number | Date) => {
     setFormData({ ...formData, [field]: value });
   };
 

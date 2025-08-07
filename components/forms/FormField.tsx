@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { SymbolView } from 'expo-symbols';
+import { SymbolView, SFSymbol } from 'expo-symbols';
 import { theme } from '@/styles/theme';
 
 interface FormFieldProps {
@@ -31,7 +31,7 @@ export const FormField = ({
       <View style={[styles.inputContainer, error && styles.inputError]}>
         {icon && (
           <SymbolView 
-            name={icon as any} 
+            name={icon as SFSymbol} 
             style={styles.icon} 
             type="hierarchical" 
           />

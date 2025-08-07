@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, ScrollView, Platform, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -15,6 +15,8 @@ import { SUBSCRIPTION_CATEGORIES } from '@/types/subscription';
 import { theme } from '@/styles/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useDate } from '@/hooks/useDate';
+import { DatePickerEvent } from '@/types/common';
+import { toast } from '@/services/ToastService';
 
 export default function EditSubscriptionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,7 +44,7 @@ export default function EditSubscriptionScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
+  const handleDateChange = (event: DatePickerEvent, selectedDate?: Date) => {
     setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
       updateFormData('renewalDate', selectedDate);
@@ -58,22 +60,15 @@ export default function EditSubscriptionScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Eliminar Suscripción',
+    toast.confirm(
       `¿Estás seguro de que deseas eliminar "${subscription?.name}"? Esta acción no se puede deshacer.`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: async () => {
-            if (subscription) {
-              await deleteSubscription(subscription.id);
-              router.back();
-            }
-          }
-        },
-      ]
+      'Eliminar Suscripción',
+      async () => {
+        if (subscription) {
+          await deleteSubscription(subscription.id);
+          router.back();
+        }
+      }
     );
   };
 
